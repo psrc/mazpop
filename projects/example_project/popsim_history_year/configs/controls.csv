@@ -1,0 +1,19 @@
+target,geography,seed_table,importance,control_field,expression
+num_units,block_id,households,1000000000,num_units,(households.wgtp > 0) & (households.wgtp < np.inf)
+num_persons,region,persons,10000,num_persons,persons.hh_id > 0
+income_0_50k,tract_id,households,6000,income_0_50k,((households.persons > 0) & (households.income < 10000)) | ((households.income >= 10000) & (households.income < 15000)) | ((households.income >= 15000) & (households.income < 20000)) | ((households.income >= 20000) & (households.income < 25000)) | ((households.income >= 25000) & (households.income < 30000)) | ((households.income >= 30000) & (households.income < 35000)) | ((households.income >= 35000) & (households.income < 40000)) | ((households.income >= 40000) & (households.income < 45000)) | ((households.income >= 45000) & (households.income < 50000))
+income_50k_75k,tract_id,households,6000,income_50k_75k,((households.income >= 50000) & (households.income < 60000)) | ((households.income >= 60000) & (households.income < 75000))
+income_75k_125k,tract_id,households,6000,income_75k_125k,((households.income >= 75000) & (households.income < 100000)) | ((households.income >= 100000) & (households.income < 125000))
+income_125k_plus,tract_id,households,6000,income_125k_plus,((households.income >= 125000) & (households.income < 150000)) | ((households.income >= 150000) & (households.income < 200000)) | (households.income >= 200000)
+building_type_sf_detached,tract_id,households,10000,building_type_sf_detached,households.building_type == 2
+building_type_middle,tract_id,households,10000,building_type_middle,(households.building_type == 1) | (households.building_type == 3) | (households.building_type == 4) | (households.building_type == 5) | (households.building_type == 10)
+building_type_mf,tract_id,households,10000,building_type_mf,(households.building_type == 6) | (households.building_type == 7) | (households.building_type == 8) | (households.building_type == 9)
+year_built_pre_1940,tract_id,households,3000,year_built_pre_1940,(households.year_built > 0) & (households.year_built < 1940)
+year_built_1940_1959,tract_id,households,3000,year_built_1940_1959,((households.year_built >= 1940) & (households.year_built < 1950)) | ((households.year_built >= 1950) & (households.year_built < 1960))
+year_built_1960_1979,tract_id,households,3000,year_built_1960_1979,((households.year_built >= 1960) & (households.year_built < 1970)) | ((households.year_built >= 1970) & (households.year_built < 1980))
+year_built_1980_1999,tract_id,households,3000,year_built_1980_1999,((households.year_built >= 1980) & (households.year_built < 1990)) | ((households.year_built >= 1990) & (households.year_built < 2000))
+year_built_2000_2009,tract_id,households,3000,year_built_2000_2009,(households.year_built >= 2000) & (households.year_built < 2010)
+vacant_type_renter,block_id,households,1000,vacant_type_renter,(households.vacant_type == 1) | (households.vacant_type == 2) | (households.vacant_type == 6) | (households.vacant_type == 7)
+vacant_type_owner,block_id,households,1000,vacant_type_owner,(households.vacant_type == 3) | (households.vacant_type == 4) | (households.vacant_type == 5)
+tenure_owner,block_id,households,5000,tenure_owner,households.tenure == 1
+tenure_renter,block_id,households,5000,tenure_renter,households.tenure == 2

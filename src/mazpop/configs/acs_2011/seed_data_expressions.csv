@@ -1,0 +1,21 @@
+expr_out,expression,notes
+households,households.loc[(households.TYPE==1)].copy(),removes group quarters from households table
+households.household_id,(households.reset_index(drop=True).index+1).astype(int),
+persons.household_id,persons['SERIALNO'].map(households.set_index('SERIALNO')['household_id']).fillna(-1).astype(int),removes group quarters from persons
+persons,persons.loc[persons.household_id != -1].copy(),removes group quarters from persons
+persons.household_id,persons.household_id,
+households.persons,households['NP'],
+households.building_type,households['BLD'].astype(int),
+households.tenure,"np.where(households.TEN.isin([1,2]),1,np.where(households.TEN.isin([3,4]),2,0))",vacant units get 0 since TEN is blank for them
+households.income,"np.where(households.NP > 0,round(households['ADJINC'] / 1000000 * households['HINCP'],0).fillna(0),-1).astype(int)",-1 for vacant units
+households.puma_id,('1' + households['ST'].astype(str).str.zfill(2) + households['PUMA'].astype(str).str.zfill(5)).astype(int),
+persons.pwgtp,persons['PWGTP'],
+households.wgtp,households['WGTP'],
+persons.serialno,persons['SERIALNO'],
+households.serialno,households['SERIALNO'],
+households.hh_id,households['household_id'],
+persons.hh_id,persons['household_id'],
+persons.per_num,persons['SPORDER'],
+households.is_vacant,(households['VACS'] > 0).astype(int),
+households.vacant_type,households['VACS'].fillna(0).astype(int),blank for occupied units
+households.year_built,"households['YBL'].map({9:1939,8:1940,7:1950,6:1960,5:1970,4:1980,3:1990,2:2000,1:2000}).fillna(-1).astype(int)",

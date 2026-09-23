@@ -1,0 +1,16 @@
+group,total
+hhsz,hh
+total_pop_age,total_pop
+hhpop_age,hhpop
+race_ethnicity,total_pop
+income,hh
+tenure,hh
+vacant_type,vacant_units
+building_type,units
+hh_type,hh
+industry,workers
+occupation,workers
+home_value,owner_hh
+rent,renter_hh
+year_built,units
+recent_mover,hh

@@ -1,0 +1,9 @@
+name,variables,seed_expression,control_alias
+total_pop,['B01001_001E'],,
+gq,['B26001_001E'],,
+hhpop,['B11002_001E'],persons.household_id > 0,num_persons
+hh,['B25009_001E'],households.persons > 0,num_hh
+owner_hh,['B25075_001E'] ,households.tenure == 1,
+renter_hh,['B25056_001E'],households.tenure == 2,
+workers,['C24070_001E'],persons.is_worker == 1,
+units,['B25024_001E'],households.wgtp > 0,

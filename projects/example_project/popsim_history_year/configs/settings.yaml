@@ -1,0 +1,79 @@
+INTEGERIZE_WITH_BACKSTOPPED_CONTROLS: true
+SUB_BALANCE_WITH_FLOAT_SEED_WEIGHTS: false
+GROUP_BY_INCIDENCE_SIGNATURE: true
+USE_SIMUL_INTEGERIZER: true
+USE_CVXPY: false
+max_expansion_factor: 30
+geographies:
+- region
+- puma_id
+- tract_id
+- block_id
+seed_geography: puma_id
+data_dir: data
+input_table_list:
+- tablename: households
+  filename: seed_households.csv
+  index_col: hh_id
+  column_map:
+    hhnum: hh_id
+- tablename: persons
+  filename: seed_persons.csv
+  column_map:
+    hhnum: hh_id
+    SPORDER: per_num
+- tablename: geo_cross_walk
+  filename: puma_block_lookup.csv
+- tablename: region_control_data
+  filename: region_marginals.csv
+- tablename: tract_id_control_data
+  filename: tract_marginals.csv
+- tablename: block_id_control_data
+  filename: block_marginals.csv
+household_weight_col: wgtp
+household_id_col: hh_id
+total_hh_control: num_units
+control_file_name: controls.csv
+output_tables:
+  action: include
+  tables:
+  - summary_block_id
+  - summary_tract_id
+  - summary_region
+  - expanded_household_ids
+output_synthetic_population:
+  household_id: household_id
+  households:
+    filename: popsim_hh.csv
+    columns:
+    - persons
+    - building_type
+    - tenure
+    - income
+    - puma_id
+    - wgtp
+    - serialno
+    - hh_id
+    - is_vacant
+    - vacant_type
+    - year_built
+  persons:
+    filename: synthetic_persons.csv
+    columns:
+    - pwgtp
+    - serialno
+    - hh_id
+    - per_num
+run_list:
+  steps:
+  - input_pre_processor
+  - setup_data_structures
+  - initial_seed_balancing
+  - meta_control_factoring
+  - final_seed_balancing
+  - integerize_final_seed_weights
+  - sub_balancing.geography=tract_id
+  - sub_balancing.geography=block_id
+  - expand_households
+  - write_tables
+  - write_synthetic_population

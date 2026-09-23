@@ -1,0 +1,6 @@
+name,variables,seed_expression,control_alias
+units,['H001001'],households.wgtp > 0,num_units
+vacant_units,['H003003'],households.is_vacant == 1,num_vacant
+hh,['H003002'],households.persons > 0,num_hh
+hhpop,['H010001'],persons.household_id > 0,num_persons
+total_pop,['P001001'],,

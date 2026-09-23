@@ -1,0 +1,70 @@
+name,group,variables,expression
+total_pop_age_0_4,total_pop_age,"['P12_003N','P12_027N']",
+total_pop_age_5_9,total_pop_age,"['P12_004N','P12_028N']",
+total_pop_age_10_14,total_pop_age,"['P12_005N','P12_029N']",
+total_pop_age_15_17,total_pop_age,"['P12_006N','P12_030N']",
+total_pop_age_18_19,total_pop_age,"['P12_007N','P12_031N']",
+total_pop_age_20,total_pop_age,"['P12_008N','P12_032N']",
+total_pop_age_21,total_pop_age,"['P12_009N','P12_033N']",
+total_pop_age_22_24,total_pop_age,"['P12_010N','P12_034N']",
+total_pop_age_25_29,total_pop_age,"['P12_011N','P12_035N']",
+total_pop_age_30_34,total_pop_age,"['P12_012N','P12_036N']",
+total_pop_age_35_39,total_pop_age,"['P12_013N','P12_037N']",
+total_pop_age_40_44,total_pop_age,"['P12_014N','P12_038N']",
+total_pop_age_45_49,total_pop_age,"['P12_015N','P12_039N']",
+total_pop_age_50_54,total_pop_age,"['P12_016N','P12_040N']",
+total_pop_age_55_59,total_pop_age,"['P12_017N','P12_041N']",
+total_pop_age_60_61,total_pop_age,"['P12_018N','P12_042N']",
+total_pop_age_62_64,total_pop_age,"['P12_019N','P12_043N']",
+total_pop_age_65_66,total_pop_age,"['P12_020N','P12_044N']",
+total_pop_age_67_69,total_pop_age,"['P12_021N','P12_045N']",
+total_pop_age_70_74,total_pop_age,"['P12_022N','P12_046N']",
+total_pop_age_75_79,total_pop_age,"['P12_023N','P12_047N']",
+total_pop_age_80_84,total_pop_age,"['P12_024N','P12_048N']",
+total_pop_age_85_plus,total_pop_age,"['P12_025N','P12_049N']",
+hhpop_age_0_4,hhpop_age,"['PCT13_003N','PCT13_027N']",
+hhpop_age_5_9,hhpop_age,"['PCT13_004N','PCT13_028N']",
+hhpop_age_10_14,hhpop_age,"['PCT13_005N','PCT13_029N']",
+hhpop_age_15_17,hhpop_age,"['PCT13_006N','PCT13_030N']",
+hhpop_age_18_19,hhpop_age,"['PCT13_007N','PCT13_031N']",
+hhpop_age_20,hhpop_age,"['PCT13_008N','PCT13_032N']",
+hhpop_age_21,hhpop_age,"['PCT13_009N','PCT13_033N']",
+hhpop_age_22_24,hhpop_age,"['PCT13_010N','PCT13_034N']",
+hhpop_age_25_29,hhpop_age,"['PCT13_011N','PCT13_035N']",
+hhpop_age_30_34,hhpop_age,"['PCT13_012N','PCT13_036N']",
+hhpop_age_35_39,hhpop_age,"['PCT13_013N','PCT13_037N']",
+hhpop_age_40_44,hhpop_age,"['PCT13_014N','PCT13_038N']",
+hhpop_age_45_49,hhpop_age,"['PCT13_015N','PCT13_039N']",
+hhpop_age_50_54,hhpop_age,"['PCT13_016N','PCT13_040N']",
+hhpop_age_55_59,hhpop_age,"['PCT13_017N','PCT13_041N']",
+hhpop_age_60_61,hhpop_age,"['PCT13_018N','PCT13_042N']",
+hhpop_age_62_64,hhpop_age,"['PCT13_019N','PCT13_043N']",
+hhpop_age_65_66,hhpop_age,"['PCT13_020N','PCT13_044N']",
+hhpop_age_67_69,hhpop_age,"['PCT13_021N','PCT13_045N']",
+hhpop_age_70_74,hhpop_age,"['PCT13_022N','PCT13_046N']",
+hhpop_age_75_79,hhpop_age,"['PCT13_023N','PCT13_047N']",
+hhpop_age_80_84,hhpop_age,"['PCT13_024N','PCT13_048N']",
+hhpop_age_85_plus,hhpop_age,"['PCT13_025N','PCT13_049N']",
+hhpop_rate_age_0_4,,,df['hhpop_age_0_4'] / df['total_pop_age_0_4']
+hhpop_rate_age_5_9,,,df['hhpop_age_5_9'] / df['total_pop_age_5_9']
+hhpop_rate_age_10_14,,,df['hhpop_age_10_14'] / df['total_pop_age_10_14']
+hhpop_rate_age_15_17,,,df['hhpop_age_15_17'] / df['total_pop_age_15_17']
+hhpop_rate_age_18_19,,,df['hhpop_age_18_19'] / df['total_pop_age_18_19']
+hhpop_rate_age_20,,,df['hhpop_age_20'] / df['total_pop_age_20']
+hhpop_rate_age_21,,,df['hhpop_age_21'] / df['total_pop_age_21']
+hhpop_rate_age_22_24,,,df['hhpop_age_22_24'] / df['total_pop_age_22_24']
+hhpop_rate_age_25_29,,,df['hhpop_age_25_29'] / df['total_pop_age_25_29']
+hhpop_rate_age_30_34,,,df['hhpop_age_30_34'] / df['total_pop_age_30_34']
+hhpop_rate_age_35_39,,,df['hhpop_age_35_39'] / df['total_pop_age_35_39']
+hhpop_rate_age_40_44,,,df['hhpop_age_40_44'] / df['total_pop_age_40_44']
+hhpop_rate_age_45_49,,,df['hhpop_age_45_49'] / df['total_pop_age_45_49']
+hhpop_rate_age_50_54,,,df['hhpop_age_50_54'] / df['total_pop_age_50_54']
+hhpop_rate_age_55_59,,,df['hhpop_age_55_59'] / df['total_pop_age_55_59']
+hhpop_rate_age_60_61,,,df['hhpop_age_60_61'] / df['total_pop_age_60_61']
+hhpop_rate_age_62_64,,,df['hhpop_age_62_64'] / df['total_pop_age_62_64']
+hhpop_rate_age_65_66,,,df['hhpop_age_65_66'] / df['total_pop_age_65_66']
+hhpop_rate_age_67_69,,,df['hhpop_age_67_69'] / df['total_pop_age_67_69']
+hhpop_rate_age_70_74,,,df['hhpop_age_70_74'] / df['total_pop_age_70_74']
+hhpop_rate_age_75_79,,,df['hhpop_age_75_79'] / df['total_pop_age_75_79']
+hhpop_rate_age_80_84,,,df['hhpop_age_80_84'] / df['total_pop_age_80_84']
+hhpop_rate_age_85_plus,,,df['hhpop_age_85_plus'] / df['total_pop_age_85_plus']

@@ -1,0 +1,18 @@
+income:
+- {0_50k: [0_10k, 10_15k, 15_20k, 20_25k, 25_30k, 30_35k, 35_40k, 40_45k, 45_50k]}
+- {50k_75k: [50_60k, 60_75k]}
+- {75k_125k: [75_100k, 100_125k]}
+- {125k_plus: [125_150k, 150_200k, 200k_plus]}
+building_type:
+- {sf_detached: [single_family_detached]}
+- {middle: [mobile_home, single_family_attached, multifamily2, multifamily3_4, boat_rv_van]}
+- {mf: [multifamily5_9, multifamily10_19, multifamily20_49, multifamily50_plus]}
+year_built:
+- {'pre_1940': ['pre_1940']}
+- {'1940_1959': ['1940_1949', '1950_1959']}
+- {'1960_1979': ['1960_1969', '1970_1979']}
+- {'1980_1999': ['1980_1989', '1990_1999']}
+- {'2000_2009': ['2000_2009']}
+vacant_type:
+- {renter: [for_rent, rented_not_occupied, migrant, other]}
+- {owner: [for_sale, sold_not_occupied, seasonal]}

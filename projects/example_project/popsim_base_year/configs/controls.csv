@@ -1,0 +1,89 @@
+target,geography,seed_table,importance,control_field,expression
+num_units,block_id,households,1000000000,num_units,(households.wgtp > 0) & (households.wgtp < np.inf)
+num_persons,region,persons,10000,num_persons,persons.hh_id > 0
+hhpop_age_0_17,region,persons,1000,hhpop_age_0_17,(persons.age <= 4) | ((persons.age >= 5) & (persons.age <= 9)) | ((persons.age >= 10) & (persons.age <= 14)) | ((persons.age >= 15) & (persons.age <= 17))
+hhpop_age_18_24,region,persons,1000,hhpop_age_18_24,((persons.age >= 18) & (persons.age <= 19)) | (persons.age == 20) | (persons.age == 21) | ((persons.age >= 22) & (persons.age <= 24))
+hhpop_age_25_34,region,persons,1000,hhpop_age_25_34,((persons.age >= 25) & (persons.age <= 29)) | ((persons.age >= 30) & (persons.age <= 34))
+hhpop_age_35_44,region,persons,1000,hhpop_age_35_44,((persons.age >= 35) & (persons.age <= 39)) | ((persons.age >= 40) & (persons.age <= 44))
+hhpop_age_45_54,region,persons,1000,hhpop_age_45_54,((persons.age >= 45) & (persons.age <= 49)) | ((persons.age >= 50) & (persons.age <= 54))
+hhpop_age_55_64,region,persons,1000,hhpop_age_55_64,((persons.age >= 55) & (persons.age <= 59)) | ((persons.age >= 60) & (persons.age <= 61)) | ((persons.age >= 62) & (persons.age <= 64))
+hhpop_age_65_74,region,persons,1000,hhpop_age_65_74,((persons.age >= 65) & (persons.age <= 66)) | ((persons.age >= 67) & (persons.age <= 69)) | ((persons.age >= 70) & (persons.age <= 74))
+hhpop_age_75_84,region,persons,1000,hhpop_age_75_84,((persons.age >= 75) & (persons.age <= 79)) | ((persons.age >= 80) & (persons.age <= 84))
+hhpop_age_85_plus,region,persons,1000,hhpop_age_85_plus,persons.age >= 85
+hhpop_race_white,tract_id,persons,1000,hhpop_race_white,(persons.race == 1)
+hhpop_race_black,tract_id,persons,1000,hhpop_race_black,(persons.race == 2)
+hhpop_race_other,tract_id,persons,1000,hhpop_race_other,"((persons.race.isin([3,4,5]))) | ((persons.race == 8)) | ((persons.race == 9)) | ((persons.race == 6)) | ((persons.race == 7))"
+hhpop_ethnicity_hispanic,tract_id,persons,1000,hhpop_ethnicity_hispanic,persons.is_hispanic == 1
+hhpop_ethnicity_not_hispanic,tract_id,persons,1000,hhpop_ethnicity_not_hispanic,persons.is_hispanic == 0
+hhsz_1,tract_id,households,2000,hhsz_1,households.persons == 1
+hhsz_2,tract_id,households,2000,hhsz_2,households.persons == 2
+hhsz_3,tract_id,households,2000,hhsz_3,households.persons == 3
+hhsz_4,tract_id,households,2000,hhsz_4,households.persons == 4
+hhsz_5_plus,tract_id,households,2000,hhsz_5_plus,(households.persons == 5) | (households.persons == 6) | (households.persons >= 7)
+home_value_0_200k,tract_id,households,5000,home_value_0_200k,((households.tenure == 1) & (households.home_value < 10000)) | ((households.home_value >= 10000) & (households.home_value < 15000)) | ((households.home_value >= 15000) & (households.home_value < 20000)) | ((households.home_value >= 20000) & (households.home_value < 25000)) | ((households.home_value >= 25000) & (households.home_value < 30000)) | ((households.home_value >= 30000) & (households.home_value < 35000)) | ((households.home_value >= 35000) & (households.home_value < 40000)) | ((households.home_value >= 40000) & (households.home_value < 50000)) | ((households.home_value >= 50000) & (households.home_value < 60000)) | ((households.home_value >= 60000) & (households.home_value < 70000)) | ((households.home_value >= 70000) & (households.home_value < 80000)) | ((households.home_value >= 80000) & (households.home_value < 90000)) | ((households.home_value >= 90000) & (households.home_value < 100000)) | ((households.home_value >= 100000) & (households.home_value < 125000)) | ((households.home_value >= 125000) & (households.home_value < 150000)) | ((households.home_value >= 150000) & (households.home_value < 175000)) | ((households.home_value >= 175000) & (households.home_value < 200000))
+home_value_200k_500k,tract_id,households,5000,home_value_200k_500k,((households.home_value >= 200000) & (households.home_value < 250000)) | ((households.home_value >= 250000) & (households.home_value < 300000)) | ((households.home_value >= 300000) & (households.home_value < 400000)) | ((households.home_value >= 400000) & (households.home_value < 500000))
+home_value_500k_750k,tract_id,households,5000,home_value_500k_750k,(households.home_value >= 500000) & (households.home_value < 750000)
+home_value_750k_plus,tract_id,households,5000,home_value_750k_plus,((households.home_value >= 750000) & (households.home_value < 1000000)) | ((households.home_value >= 1000000) & (households.home_value < 1500000)) | ((households.home_value >= 1500000) & (households.home_value < 2000000)) | (households.home_value >= 2000000)
+rent_0_799,tract_id,households,5000,rent_0_799,((households.rent>0) & (households.rent<100)) | ((households.rent >= 100) & (households.rent < 150)) | ((households.rent >= 150) & (households.rent < 200)) | ((households.rent >= 200) & (households.rent < 250)) | ((households.rent >= 250) & (households.rent < 300)) | ((households.rent >= 300) & (households.rent < 350)) | ((households.rent >= 350) & (households.rent < 400)) | ((households.rent >= 400) & (households.rent < 450)) | ((households.rent >= 450) & (households.rent < 500)) | ((households.rent >= 500) & (households.rent < 550)) | ((households.rent >= 550) & (households.rent < 600)) | ((households.rent >= 600) & (households.rent < 650)) | ((households.rent >= 650) & (households.rent < 700)) | ((households.rent >= 700) & (households.rent < 750)) | ((households.rent >= 750) & (households.rent < 800))
+rent_800_1499,tract_id,households,5000,rent_800_1499,((households.rent >= 800) & (households.rent < 900)) | ((households.rent >= 900) & (households.rent < 1000)) | ((households.rent >= 1000) & (households.rent < 1250)) | ((households.rent >= 1250) & (households.rent < 1500))
+rent_1500_2499,tract_id,households,5000,rent_1500_2499,((households.rent >= 1500) & (households.rent < 2000)) | ((households.rent >= 2000) & (households.rent < 2500))
+rent_2500_3499,tract_id,households,5000,rent_2500_3499,((households.rent >= 2500) & (households.rent < 3000)) | ((households.rent >= 3000) & (households.rent < 3500))
+rent_3500_plus,tract_id,households,5000,rent_3500_plus,households.rent >= 3500
+income_0_50k,tract_id,households,10000,income_0_50k,((households.persons > 0) & (households.income < 10000)) | ((households.income >= 10000) & (households.income < 15000)) | ((households.income >= 15000) & (households.income < 20000)) | ((households.income >= 20000) & (households.income < 25000)) | ((households.income >= 25000) & (households.income < 30000)) | ((households.income >= 30000) & (households.income < 35000)) | ((households.income >= 35000) & (households.income < 40000)) | ((households.income >= 40000) & (households.income < 45000)) | ((households.income >= 45000) & (households.income < 50000))
+income_50k_75k,tract_id,households,10000,income_50k_75k,((households.income >= 50000) & (households.income < 60000)) | ((households.income >= 60000) & (households.income < 75000))
+income_75k_125k,tract_id,households,10000,income_75k_125k,((households.income >= 75000) & (households.income < 100000)) | ((households.income >= 100000) & (households.income < 125000))
+income_125k_200k,tract_id,households,10000,income_125k_200k,((households.income >= 125000) & (households.income < 150000)) | ((households.income >= 150000) & (households.income < 200000))
+income_200k_plus,tract_id,households,10000,income_200k_plus,households.income >= 200000
+building_type_sf_detached,tract_id,households,10000,building_type_sf_detached,households.building_type == 2
+building_type_middle,tract_id,households,10000,building_type_middle,(households.building_type == 1) | (households.building_type == 3) | (households.building_type == 4) | (households.building_type == 5) | (households.building_type == 10)
+building_type_mf,tract_id,households,10000,building_type_mf,(households.building_type == 6) | (households.building_type == 7) | (households.building_type == 8) | (households.building_type == 9)
+year_built_pre_1940,tract_id,households,6000,year_built_pre_1940,(households.year_built > 0) & (households.year_built < 1940)
+year_built_1940_1959,tract_id,households,6000,year_built_1940_1959,((households.year_built >= 1940) & (households.year_built < 1950)) | ((households.year_built >= 1950) & (households.year_built < 1960))
+year_built_1960_1979,tract_id,households,6000,year_built_1960_1979,((households.year_built >= 1960) & (households.year_built < 1970)) | ((households.year_built >= 1970) & (households.year_built < 1980))
+year_built_1980_1999,tract_id,households,6000,year_built_1980_1999,((households.year_built >= 1980) & (households.year_built < 1990)) | ((households.year_built >= 1990) & (households.year_built < 2000))
+year_built_2000_2009,tract_id,households,6000,year_built_2000_2009,(households.year_built >= 2000) & (households.year_built < 2010)
+year_built_2010_2019,tract_id,households,6000,year_built_2010_2019,(households.year_built >= 2010) & (households.year_built < 2020)
+year_built_2020_plus,tract_id,households,6000,year_built_2020_plus,households.year_built >= 2020
+hh_type_with_chilren,tract_id,households,1000,hh_type_with_chilren,households.children > 0
+hh_type_no_children,tract_id,households,1000,hh_type_no_children,(households.persons > 0) & (households.children == 0)
+vacant_type_renter,block_id,households,100,vacant_type_renter,(households.vacant_type == 1) | (households.vacant_type == 2) | (households.vacant_type == 6) | (households.vacant_type == 7)
+vacant_type_owner,block_id,households,100,vacant_type_owner,(households.vacant_type == 3) | (households.vacant_type == 4) | (households.vacant_type == 5)
+occupation_11,region,persons,100,occupation_11,persons.occupation == 11
+occupation_13,region,persons,100,occupation_13,persons.occupation == 13
+occupation_15,region,persons,100,occupation_15,persons.occupation == 15
+occupation_17,region,persons,100,occupation_17,persons.occupation == 17
+occupation_19,region,persons,100,occupation_19,persons.occupation == 19
+occupation_21,region,persons,100,occupation_21,persons.occupation == 21
+occupation_23,region,persons,100,occupation_23,persons.occupation == 23
+occupation_25,region,persons,100,occupation_25,persons.occupation == 25
+occupation_27,region,persons,100,occupation_27,persons.occupation == 27
+occupation_29,region,persons,100,occupation_29,persons.occupation == 29
+occupation_31,region,persons,100,occupation_31,persons.occupation == 31
+occupation_33,region,persons,100,occupation_33,persons.occupation == 33
+occupation_35,region,persons,100,occupation_35,persons.occupation == 35
+occupation_37,region,persons,100,occupation_37,persons.occupation == 37
+occupation_39,region,persons,100,occupation_39,persons.occupation == 39
+occupation_41,region,persons,100,occupation_41,persons.occupation == 41
+occupation_43,region,persons,100,occupation_43,persons.occupation == 43
+occupation_45,region,persons,100,occupation_45,persons.occupation == 45
+occupation_47,region,persons,100,occupation_47,persons.occupation == 47
+occupation_49,region,persons,100,occupation_49,persons.occupation == 49
+occupation_51,region,persons,100,occupation_51,persons.occupation == 51
+occupation_53,region,persons,100,occupation_53,persons.occupation == 53
+industry_98,region,persons,100,industry_98,persons.industry == 98
+industry_1121,region,persons,100,industry_1121,persons.industry == 1121
+industry_23,region,persons,100,industry_23,persons.industry == 23
+industry_3133,region,persons,100,industry_3133,persons.industry == 3133
+industry_42,region,persons,100,industry_42,persons.industry == 42
+industry_4445,region,persons,100,industry_4445,persons.industry == 4445
+industry_484922,region,persons,100,industry_484922,persons.industry == 484922
+industry_51,region,persons,100,industry_51,persons.industry == 51
+industry_5253,region,persons,100,industry_5253,persons.industry == 5253
+industry_5456,region,persons,100,industry_5456,persons.industry == 5456
+industry_6162,region,persons,100,industry_6162,persons.industry == 6162
+industry_7172,region,persons,100,industry_7172,persons.industry == 7172
+industry_81,region,persons,100,industry_81,persons.industry == 81
+recent_mover_is,tract_id,households,10000,recent_mover_is,households.recent_mover == 1
+recent_mover_not,tract_id,households,10000,recent_mover_not,households.recent_mover == 0
+tenure_owner,block_id,households,4000,tenure_owner,households.tenure == 1
+tenure_renter,block_id,households,4000,tenure_renter,households.tenure == 2

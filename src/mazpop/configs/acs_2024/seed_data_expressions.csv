@@ -1,0 +1,45 @@
+expr_out,expression,notes
+households,households.loc[(households.TYPEHUGQ==1)].copy(),removes group quarters from households table
+households.household_id,(households.reset_index(drop=True).index+1).astype(int),
+persons.household_id,persons['SERIALNO'].map(households.set_index('SERIALNO')['household_id']).fillna(-1).astype(int),removes group quarters from persons
+persons,persons.loc[persons.household_id != -1].copy(),removes group quarters from persons
+persons.household_id,persons.household_id,
+households.persons,households['NP'],
+households.building_type,households['BLD'].astype(int),
+households.tenure,"np.where(households.TEN.isin([1,2]),1,np.where(households.TEN.isin([3,4]),2,0))",vacant units get 0 since TEN is blank for them
+households.income,"np.where(households.NP > 0,round(households['ADJINC'] / 1000000 * households['HINCP'],2),-1)",-1 for vacant units
+households.rent,"np.where(households.TEN == 3,round(households['ADJHSG'] / 1000000 * households['GRNTP'],2),-1)",-1 for vacant units
+households.home_value,"np.where((households.TEN.isin([1,2])) | (households.VACS.isin([3,4])),round(households['ADJHSG'] / 1000000 * households['VALP'],2),-1)",VALP is populated for for-sale vacant units so it must be overridden
+persons.age,persons['AGEP'],
+persons.is_child,(persons['age'] < 18).astype(int),
+persons.is_adult,(persons['age'] >= 18).astype(int),
+persons.is_worker,"persons['ESR'].isin([1, 2, 4, 5]).astype(int)",
+persons.is_student,"persons['SCH'].isin([2,3]).astype(int)",
+persons.work_from_home,(persons['JWTRNS'] == 11).astype(int),
+persons.is_hispanic,(persons['HISP'] > 1).astype(int),
+persons.race,persons['RAC1P'],
+persons.sex,persons['SEX'],
+households.children,persons.groupby('household_id')['is_child'].sum().reindex(households['household_id']).fillna(0).values.astype(int),
+households.adults,persons.groupby('household_id')['is_adult'].sum().reindex(households['household_id']).fillna(0).values.astype(int),
+households.workers,persons.groupby('household_id')['is_worker'].sum().reindex(households['household_id']).fillna(0).values.astype(int),
+households.cars,households['VEH'].fillna(-1).astype(int),blank for vacant units
+households.age_of_head,households['HHLDRAGEP'].fillna(-1).astype(int),blank for vacant units
+households.race_of_head,households['HHLDRRAC1P'].fillna(-1).astype(int),blank for vacant units
+households.hispanic_status_of_head,"np.where(households.NP > 0,(households['HHLDRHISP']>1).astype(int),-1)",-1 for vacant units
+households.recent_mover,"np.where(households.NP > 0,households['MV'].isin([1,2,3]).astype(int),-1)",-1 for vacant units
+households.puma_id,('1' + households['STATE'].astype(str).str.zfill(2) + households['PUMA'].astype(str).str.zfill(5)).astype(int),
+persons.industry,"persons.NAICSP.str[:3].replace('928','0').str[:2].replace({'11':'1121','21':'1121','31':'3133','32':'3133','33':'3133','3M':'3133','44':'4445','45':'4445','4M':'4445','48':'484922','49':'484922','22':'484922','52':'5253','53':'5253','54':'5456','55':'5456','56':'5456','61':'6162','62':'6162','71':'7172','72':'7172','99':'0'}).astype(float).fillna(0)",
+persons.industry,"np.where((persons['COW'].isin([3,4,5]) & persons['industry']!=0),98,persons['industry'])",set gov workers to industy 98
+persons.industry,"np.where(persons.is_worker==0,0,persons['industry']).astype(int)",
+persons.occupation,"persons['SOCP'].str[:2].replace('55','99').astype(float).fillna(99)",
+persons.occupation,"np.where(persons.is_worker==0,0,persons['occupation']).astype(int)",
+persons.pwgtp,persons['PWGTP'],
+households.wgtp,households['WGTP'],
+persons.serialno,persons['SERIALNO'],
+households.serialno,households['SERIALNO'],
+households.hh_id,households['household_id'],
+persons.hh_id,persons['household_id'],
+persons.per_num,persons['SPORDER'],
+households.is_vacant,(households['VACS'] > 0).astype(int),
+households.vacant_type,households['VACS'].fillna(0).astype(int),blank for occupied units
+households.year_built,households['YRBLT'].fillna(-1).astype(int)

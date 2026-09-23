@@ -1,0 +1,10 @@
+name,group,variables,seed_expression,always_download
+owner,tenure,"['H4_002N','H4_003N']",households.tenure == 1,TRUE
+renter,tenure,['H4_004N'],households.tenure == 2,TRUE
+for_rent,vacant_type,['H5_002N'],households.vacant_type == 1,
+rented_not_occupied,vacant_type,['H5_003N'],households.vacant_type == 2,
+for_sale,vacant_type,['H5_004N'],households.vacant_type == 3,
+sold_not_occupied,vacant_type,['H5_005N'],households.vacant_type == 4,
+seasonal,vacant_type,['H5_006N'],households.vacant_type == 5,
+migrant,vacant_type,['H5_007N'],households.vacant_type == 6,
+other,vacant_type,['H5_008N'],households.vacant_type == 7,
