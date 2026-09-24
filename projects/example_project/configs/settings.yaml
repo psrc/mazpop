@@ -4,13 +4,18 @@ base_acs_year: 2024 # used for synthetic population characteristics, totals will
 history_year: 2010 # used for calibration data
 history_acs_year: 2011
 
-
 # relative to project root
 data_dir: data 
 output_dir: output
 
 census_key: CENSUS_KEY # census api key env variable name
 
+taz_layer: TAZ2010_subset.shp
+taz_id_field: taz # will be renamed to zone_id
+
+#----------------------------------------------------------------------------------------
+# Pipeline steps
+#----------------------------------------------------------------------------------------
 steps:
 # create marginals and run popsim for base year
 - name: pypyr.steps.set
@@ -18,7 +23,7 @@ steps:
     set:
       year_key: base # history or base
 - mazpop.steps.set_year
-- mazpop.steps.get_acs_data
+# - mazpop.steps.get_acs_data
 # - mazpop.steps.get_dec_data
 # - mazpop.steps.calculate_hhpop_age
 # - mazpop.steps.pums_download
@@ -26,8 +31,8 @@ steps:
 # - mazpop.steps.create_puma_tract_lookup
 # - mazpop.steps.create_puma_block_lookup
 - mazpop.steps.create_taz_block_lookup
-- mazpop.steps.create_marginals
-- mazpop.steps.run_populationsim
+# - mazpop.steps.create_marginals
+# - mazpop.steps.run_populationsim
 
 # create marginals and run popsim for history year
 - name: pypyr.steps.set
@@ -35,11 +40,12 @@ steps:
     set:
       year_key: history # history or base
 - mazpop.steps.set_year
-- mazpop.steps.get_acs_data
+# - mazpop.steps.get_acs_data
 # - mazpop.steps.get_dec_data
 # - mazpop.steps.pums_download
 # - mazpop.steps.create_seed_data
 # - mazpop.steps.create_puma_tract_lookup
 # - mazpop.steps.create_puma_block_lookup
-- mazpop.steps.create_marginals
-- mazpop.steps.run_populationsim
+- mazpop.steps.create_taz_block_lookup
+# - mazpop.steps.create_marginals
+# - mazpop.steps.run_populationsim
