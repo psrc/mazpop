@@ -74,7 +74,7 @@ def get_command(
     if cmd:
         base = cmd.split() if isinstance(cmd, str) else list(cmd)
     else:
-        base = ["uv", "run", "python", "-m", "blockpop.util.popsim_main"]
+        base = ["uv", "run", "python", "-m", "mazpop.util.popsim_main"]
     return base + [
         "-c", str(config_dir),
         "-d", str(data_dir),
@@ -90,11 +90,11 @@ def run_step(context):
     print(f"Running PopulationSim (config={config_dir}, data={data_dir}, output={output_dir})")
     print(f"Command: {' '.join(command)}")
 
-    result = subprocess.run(command, cwd=str(pipeline.base_dir), check=False)
+    result = subprocess.run(command, cwd=str(pipeline.root_dir), check=False)
     if result.returncode != 0:
         raise RuntimeError(
             f"PopulationSim exited with code {result.returncode}. "
             f"See logs in {output_dir}."
         )
     print(f"PopulationSim complete. Outputs in: {output_dir}")
-    return output_dir
+    return context

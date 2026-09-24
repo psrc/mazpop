@@ -103,5 +103,6 @@ def run_step(context):
         joined_out = joined_out.merge(joined, on='block_id', how='outer')
     clipped_blocks = drop_blocks_not_in_clip_layers(pipeline, joined_out)
     blocks_with_geog = clipped_blocks.merge(blocks, on='block_id', how='left').drop(columns=['geometry'], errors='ignore')
+    blocks_with_geog['maz_id'] = range(1, len(blocks_with_geog) + 1)
     pipeline.save_table(f'blocks_{year}', blocks_with_geog, fmt='csv')
     return context

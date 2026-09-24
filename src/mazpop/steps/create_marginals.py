@@ -14,6 +14,12 @@ from mazpop.util.pipeline import Pipeline
 _KNOWN_GROUPS = []
 _DEC_GROUPS = set()
 
+# Tract ids of the blocks inside the clip spatial layers, populated by
+# _load_include_tracts. While set, every source table, group table, and lookup
+# read by this step is restricted to these tracts so the block, tract, and
+# region marginals all describe the same subset of geography.
+_INCLUDE_TRACTS = None
+
 # Standalone (non-group) controls map a control target directly to a totals
 # column instead of being scaled from an ACS category group. The mapping is
 # loaded at runtime from total_variables.csv by _load_special_control_totals:
@@ -104,8 +110,48 @@ def _load_special_control_totals(pipeline):
     return mapping
 
 
+def _load_include_tracts(pipeline):
+    """Set _INCLUDE_TRACTS to the tracts overlapped by the clip layers.
+
+    blocks_<year> contains only the blocks whose location falls inside the clip
+    spatial layers, so its tract ids define the geography this step builds
+    marginals for. Note the downloaded decennial/ACS tables and
+    puma_block_lookup.csv cover every block in the configured counties; the
+    clip is applied on top of them via _clip_to_include_tracts.
+    """
+    global _INCLUDE_TRACTS
+    blocks = pipeline.get_table(f'blocks_{pipeline.context["year"]}')
+    _INCLUDE_TRACTS = pd.Index(
+        blocks['block_id'].astype(str).str[:12].astype(np.int64).unique()
+    )
+    return _INCLUDE_TRACTS
+
+
+def _clip_to_include_tracts(df, label):
+    """Restrict a table keyed by Census ``geoid`` to the included tracts.
+
+    ``geoid`` is a block (15-digit) or tract (11-digit) id; the tract is the
+    first 12 characters in both cases. Returns ``df`` unchanged while
+    ``_INCLUDE_TRACTS`` is None (i.e. before run_step loads the clip).
+    """
+    if _INCLUDE_TRACTS is None:
+        return df
+    if 'geoid' not in df.columns:
+        raise RuntimeError(f"{label} has no 'geoid' column to clip on")
+    out = df.copy()
+    out['geoid'] = out['geoid'].astype(np.int64)
+    tract_id = out['geoid'].astype(str).str[:12].astype(np.int64)
+    return out[tract_id.isin(_INCLUDE_TRACTS)].reset_index(drop=True)
+
+
 def _build_block_lookup(pipeline):
-    """Load puma_block_lookup.csv and ensure id columns are ints."""
+    """Load puma_block_lookup.csv, clip it to the included tracts, and int ids.
+
+    puma_block_lookup.csv is built from every block in the downloaded counties,
+    so it must be clipped to the same tracts as the source tables; otherwise
+    block rows outside the tract set pick up group values from the unclipped
+    group tables while their totals fall back to 0.
+    """
     path = Path(pipeline.get_popsim_root_dir()) / 'data' / 'puma_block_lookup.csv'
     if not path.exists():
         raise FileNotFoundError(f"Required lookup not found: {path}")
@@ -113,6 +159,10 @@ def _build_block_lookup(pipeline):
     for col in ('block_id', 'tract_id', 'county_id', 'puma_id', 'region'):
         if col in lookup.columns:
             lookup[col] = lookup[col].astype(np.int64)
+    if _INCLUDE_TRACTS is not None:
+        lookup = lookup[
+            lookup['tract_id'].isin(_INCLUDE_TRACTS)
+        ].reset_index(drop=True)
     return lookup
 
 
@@ -219,8 +269,10 @@ def _read_group_table(pipeline, group):
     acs_year = pipeline.context['acs_year']
     base_year = pipeline.context['year']
     if group in _DEC_GROUPS:
-        return pipeline.get_table(f'dec_data_{base_year}/{group}')
-    return pipeline.get_table(f'acs_data_{acs_year}/{group}')
+        table_name = f'dec_data_{base_year}/{group}'
+    else:
+        table_name = f'acs_data_{acs_year}/{group}'
+    return _clip_to_include_tracts(pipeline.get_table(table_name), table_name)
 
 
 def _group_targets_in_df(df, controls, geography, group_total_map, special_totals):
@@ -568,20 +620,32 @@ def run_step(context):
     controls['target'] = controls['target'].astype(str)
     controls['geography'] = controls['geography'].astype(str)
 
-    # Mappings & lookups.
+    # Mappings, clip geography, & lookups.
     _load_known_groups(pipeline)
     group_total_map = _load_group_totals(pipeline)
     special_totals = _load_special_control_totals(pipeline)
     total_cols = _load_dec_total_columns(pipeline)
+
+    # Clip to the tracts overlapped by the clip spatial layers. The clip is
+    # applied to every source table, group table, and lookup this step reads so
+    # the block, tract, and region marginals are all built from the same subset
+    # of blocks and tracts.
+    _load_include_tracts(pipeline)
     lookup = _build_block_lookup(pipeline)
 
     # Source tables.
-    dec_totals_block = pipeline.get_table(f'dec_data_{base_year}/dec_totals')
-    dec_totals_block['geoid'] = dec_totals_block['geoid'].astype(np.int64)
-    tenure_block = pipeline.get_table(f'dec_data_{base_year}/tenure')
-    tenure_block['geoid'] = tenure_block['geoid'].astype(np.int64)
-    acs_totals_tract = pipeline.get_table(f'acs_data_{acs_year}/acs_totals')
-    acs_totals_tract['geoid'] = acs_totals_tract['geoid'].astype(np.int64)
+    dec_totals_block = _clip_to_include_tracts(
+        pipeline.get_table(f'dec_data_{base_year}/dec_totals'),
+        f'dec_data_{base_year}/dec_totals',
+    )
+    tenure_block = _clip_to_include_tracts(
+        pipeline.get_table(f'dec_data_{base_year}/tenure'),
+        f'dec_data_{base_year}/tenure',
+    )
+    acs_totals_tract = _clip_to_include_tracts(
+        pipeline.get_table(f'acs_data_{acs_year}/acs_totals'),
+        f'acs_data_{acs_year}/acs_totals',
+    )
 
     # Validate controls have matching source columns up front (strict mode).
     print('Validating controls against source data')
