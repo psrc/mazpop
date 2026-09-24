@@ -1,3 +1,6 @@
+#----------------------------------------------------------------------------------------
+# Global Settings (required)
+#----------------------------------------------------------------------------------------
 base_year: 2020 # used for population, households and housing unit totals
 base_acs_year: 2024 # used for synthetic population characteristics, totals will always match base year
 
@@ -10,15 +13,35 @@ output_dir: output
 
 census_key: CENSUS_KEY # census api key env variable name
 
-taz_layer: TAZ2010_subset.shp
-taz_id_field: taz # will be renamed to zone_id
+#----------------------------------------------------------------------------------------
+# Spatial layers
+#----------------------------------------------------------------------------------------
+#   list of spatial layers saved in the data dir to be spatially joined to blocks so that 
+#   each block is associated with the corresponding spatial layer geometry
+#
+#   filename: the name of the spatial layer file (required)
+#   input_id_field: the name of the ID field in the input spatial layer (required)
+#   rename_id_field: the name to rename the input_id_field to (optional)
+#   additional_columns: list of additional columns to keep from the spatial layer (optional)
+#   clip_blocks_to_layer: whether to clip blocks to the layer geometry (optional)
+
+spatial_layers:
+  - filename: TAZ2010_subset.shp
+    input_id_field: taz
+    rename_id_field: zone_id
+    clip_blocks_to_layer: true
+
+  - filename: cities26.shp
+    input_id_field: juris
+    additional_columns: ['rgeo_class']
+
 
 #----------------------------------------------------------------------------------------
 # Pipeline steps
 #----------------------------------------------------------------------------------------
 steps:
 # create marginals and run popsim for base year
-- name: pypyr.steps.set
+- name: pypyr.steps.set # sets which year key to use (history or base) for the steps after this one
   in:
     set:
       year_key: base # history or base
@@ -30,12 +53,12 @@ steps:
 # - mazpop.steps.create_seed_data
 # - mazpop.steps.create_puma_tract_lookup
 # - mazpop.steps.create_puma_block_lookup
-- mazpop.steps.create_taz_block_lookup
+- mazpop.steps.create_block_lookups
 # - mazpop.steps.create_marginals
 # - mazpop.steps.run_populationsim
 
 # create marginals and run popsim for history year
-- name: pypyr.steps.set
+- name: pypyr.steps.set # sets which year key to use (history or base) for the steps after this one
   in:
     set:
       year_key: history # history or base
@@ -46,6 +69,6 @@ steps:
 # - mazpop.steps.create_seed_data
 # - mazpop.steps.create_puma_tract_lookup
 # - mazpop.steps.create_puma_block_lookup
-- mazpop.steps.create_taz_block_lookup
+- mazpop.steps.create_block_lookups
 # - mazpop.steps.create_marginals
 # - mazpop.steps.run_populationsim
