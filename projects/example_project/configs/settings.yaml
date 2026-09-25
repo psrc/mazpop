@@ -39,23 +39,32 @@ spatial_layers:
 #----------------------------------------------------------------------------------------
 # Open Street Map Network Settings (pandana network)
 #----------------------------------------------------------------------------------------
-
 # whether to include ferry routes in the OSM network to connect islands, ferry-only connected 
 # islands will not be connected otherwise and dropped from the network
 include_ferries: False 
+
+# turns point files into CSVs with x,y coordinates in WGS84 (EPSG:4326) to be used with
+# the pandana network for accessibility analysis. Polygon layers should have the 'polygon' 
+# key set to true so they can first be converted to points using centroids.
+point_of_interest_layers: # can be stored in zipped files in the data directory
+  - filename: transit_stops.shp
+  - filename: urban_centers.shp
+    polygon: true
 
 
 #----------------------------------------------------------------------------------------
 # LEHD LODES jobs settings
 #----------------------------------------------------------------------------------------
-government_sector: 98
-lodes_version: 8
+lodes_version: 8 # which version of the LEHD LODES data to use
+government_sector: 98 # assigns this sector for all government jobs matching industry_crosswalk.csv
 
 
 #----------------------------------------------------------------------------------------
 # Pipeline steps
 #----------------------------------------------------------------------------------------
 steps:
+  - name: mazpop.steps.unzip_data
+
 # create marginals and run popsim for history year (for land use model calibration)
   - name: pypyr.steps.set # sets which year key to use (history or base) for the steps after this one
     in:
@@ -87,5 +96,6 @@ steps:
   # - mazpop.steps.post_popsim_processing
   # - mazpop.steps.build_osm_network
   # - mazpop.steps.export_calibration_data
-  - mazpop.steps.download_jobs_data
+  # - mazpop.steps.download_jobs_data
+  # - mazpop.steps.process_poi_layers
 
