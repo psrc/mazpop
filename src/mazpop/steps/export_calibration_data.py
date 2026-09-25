@@ -16,6 +16,8 @@ variable defined by an earlier row.
 The resulting target tables are written to the project output directory.
 """
 
+from pathlib import Path
+
 import pandas as pd
 
 from mazpop.util.expressions import evaluate_expression_csv
@@ -70,8 +72,8 @@ def run_step(context):
     block_tract_xwalk = create_block_tract_lookup(blocks_by_state, tracts_by_state)
 
     # load the synthetic tables from both populationSim runs
-    popsim_output_dir_hist = pipeline.get_popsim_output_dir(history_year)
-    popsim_output_dir_base = pipeline.get_popsim_output_dir(base_year)
+    popsim_output_dir_hist = Path(pipeline.root_dir) / f'popsim_history_year' / 'output'
+    popsim_output_dir_base = Path(pipeline.root_dir) / f'popsim_base_year' / 'output'
     units_hist = pd.read_csv(popsim_output_dir_hist / UNITS_FILE)
     units_base = pd.read_csv(popsim_output_dir_base / UNITS_FILE)
     households_hist = pd.read_csv(popsim_output_dir_hist / HOUSEHOLDS_FILE)

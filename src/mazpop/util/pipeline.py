@@ -171,26 +171,7 @@ class Pipeline:
         # Returns the history year from settings.yaml
         return self.settings['history_year']
 
-    def _get_year_key(self, year_key=None):
-        # Resolves the current year key, an explicit year key ('history' or
-        # 'base'), or a year value from settings.yaml (e.g. 2020) to a year key
-        if year_key is None:
-            return self.context['year_key']
-        if year_key in ('history', 'base'):
-            return year_key
-        for key in ('history', 'base'):
-            if year_key == self.settings.get(f'{key}_year'):
-                return key
-        raise ValueError(
-            f"Unknown year or year key: {year_key!r}. Expected 'history', 'base', "
-            f"{self.settings.get('history_year')!r} or {self.settings.get('base_year')!r}."
-        )
-
-    def get_popsim_root_dir(self, year_key=None):
-        # Returns the PopulationSim run directory for the current year key, an
-        # explicit year key ('history' or 'base'), or a year from settings.yaml
-        return Path.joinpath(self.root_dir, f'popsim_{self._get_year_key(year_key)}_year')
-
-    def get_popsim_output_dir(self, year_key=None):
-        # Returns the PopulationSim output directory for a year key or year
-        return self.get_popsim_root_dir(year_key) / 'output'
+    def get_popsim_root_dir(self):
+            year_key = self.context['year_key']
+            return Path.joinpath(self.root_dir, f'popsim_{year_key}_year')
+    
