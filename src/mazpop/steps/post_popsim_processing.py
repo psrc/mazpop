@@ -3,8 +3,7 @@
 Loads PopulationSim's output (``popsim_hh.csv`` housing units and
 ``synthetic_persons.csv``) plus the ``blocks_<year>`` table, then evaluates the
 expressions in the project's ``configs/post_popsim_expressions.csv`` in file
-order, following the same ``eval`` pattern as
-:mod:`mazpop.steps.create_seed_data`.
+order via :func:`mazpop.util.expressions.evaluate_expression_csv`.
 
 Each expression row assigns one target (``expr_out``) from one pandas
 expression (``expression``). Targets can be a table (``households``), a new
@@ -18,9 +17,9 @@ The resulting tables are written to the project output directory.
 
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
+from mazpop.util.expressions import evaluate_expression_csv
 from mazpop.util.pipeline import Pipeline
 
 EXPRESSIONS_FILE = 'post_popsim_expressions.csv'
@@ -29,43 +28,6 @@ PERSONS_FILE = 'synthetic_persons.csv'
 
 # variables that must exist after evaluating the expressions before export
 EXPORTED_VARIABLES = ['households', 'units', 'blocks', 'persons', 'unit_types_df']
-
-
-def eval_post_processing_expressions(pipeline, **tables):
-    """Evaluate ``post_popsim_expressions.csv`` and return the resulting variables.
-
-    ``tables`` are the starting variables the expressions can reference (e.g.
-    ``units``, ``persons``, ``blocks``, ``maz_ids``). Helper functions are
-    injected the same way as in :mod:`mazpop.steps.create_seed_data`.
-    """
-    expressions = pd.read_csv(pipeline.settings_path / EXPRESSIONS_FILE)
-
-    namespace = {
-        'np': np,
-        'pd': pd,
-        'round': round,
-        'str': str,
-        'int': int,
-        'float': float,
-        'range': range,
-        'len': len,
-        'list': list,
-    }
-    namespace.update(tables)
-    globals_ = {'__builtins__': {}}
-
-    for _, row in expressions.iterrows():
-        target = str(row['expr_out']).strip()
-        expr = str(row['expression']).strip()
-
-        result = eval(expr, globals_, namespace)  # noqa: S307
-        # exec the assignment so that column and masked targets
-        # (units['col'], units.loc[mask, 'col']) work like plain variables
-        namespace['__result__'] = result
-        exec(f'{target} = __result__', globals_, namespace)  # noqa: S102
-        del namespace['__result__']
-
-    return namespace
 
 
 def run_step(context):
@@ -90,8 +52,9 @@ def run_step(context):
     loaded_units, loaded_persons = len(units), len(persons)
 
     # evaluate post_popsim_expressions.csv in project_dir/configs
-    namespace = eval_post_processing_expressions(
-        pipeline, units=units, persons=persons, blocks=blocks, maz_ids=maz_ids
+    namespace = evaluate_expression_csv(
+        pipeline.settings_path / EXPRESSIONS_FILE,
+        units=units, persons=persons, blocks=blocks, maz_ids=maz_ids
     )
     missing = [name for name in EXPORTED_VARIABLES if name not in namespace]
     if missing:

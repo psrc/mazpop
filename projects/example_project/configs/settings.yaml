@@ -77,5 +77,6 @@ steps:
   # - mazpop.steps.create_marginals
   # - mazpop.steps.run_populationsim
   # - mazpop.steps.post_popsim_processing
-  - mazpop.steps.build_osm_network
+  # - mazpop.steps.build_osm_network
+  - mazpop.steps.export_calibration_data
 

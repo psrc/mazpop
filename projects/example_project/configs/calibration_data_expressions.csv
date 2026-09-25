@@ -1,0 +1,22 @@
+expr_out,expression,notes
+all_tracts,"block_tract_xwalk['tract_id_base'].unique()",base year tracts present in the block to tract crosswalk
+unit_type_ids,"range(1, 4)","unit type ids to report (1=single-family, 2=middle-density, 3=multi-family)"
+tract_unit_type_index,"pd.MultiIndex.from_product([all_tracts, unit_type_ids], names=['tract_id_base', 'unit_type_id']).to_frame(index=False)",all tract x unit type combinations so missing combinations export as zero
+hist_units_by_block_type,"units_hist.groupby(['block_id', 'unit_type_id']).size().reset_index(name=f'units_{history_year}')",count history year synthetic housing units by block and unit type
+hist_units_by_tract_type,"hist_units_by_block_type.merge(block_tract_xwalk, left_on='block_id', right_on='block_id_hist').groupby(['tract_id_base', 'unit_type_id'])[[f'units_{history_year}']].sum().reset_index()",sum history year units to base year tracts through the crosswalk
+base_units_by_block_type,"units_base.groupby(['block_id', 'unit_type_id']).size().reset_index(name=f'units_{base_year}')",count base year synthetic housing units by block and unit type
+base_units_by_tract_type,"base_units_by_block_type.assign(tract_id=base_units_by_block_type['block_id'].astype(str).str[:12].astype('int64')).groupby(['tract_id', 'unit_type_id'])[[f'units_{base_year}']].sum().reset_index()",base year block ids start with their tract id (first 12 digits)
+base_units_by_tract_type,"base_units_by_tract_type.merge(tract_unit_type_index, left_on=['tract_id', 'unit_type_id'], right_on=['tract_id_base', 'unit_type_id'], how='right').fillna(0).drop(columns=['tract_id'])",keep every tract x unit type combination and fill missing base year counts with zero
+housing_unit_targets,"hist_units_by_tract_type.merge(base_units_by_tract_type, left_on=['tract_id_base', 'unit_type_id'], right_on=['tract_id_base', 'unit_type_id'], how='outer')",history and base year unit counts per base year tract and unit type
+housing_unit_targets,"housing_unit_targets.rename(columns={'tract_id_base': 'tract_id'}).fillna(0)",rename to tract_id and fill any missing history year counts with zero
+income_quartiles,"range(1, 5)",income quartiles to report computed from each year's household income distribution
+tract_income_index,"pd.MultiIndex.from_product([all_tracts, income_quartiles], names=['tract_id_base', 'income_quartile']).to_frame(index=False)",all tract x income quartile combinations so missing combinations export as zero
+hist_households_by_income,"households_hist.assign(income_quartile=lambda x: pd.qcut(x['income'], 4, labels=False) + 1).merge(block_tract_xwalk, left_on='block_id', right_on='block_id_hist', how='left').groupby(['tract_id_base', 'income_quartile']).size().reset_index(name=f'households_{history_year}')",count history year households per base year tract and income quartile
+base_households_by_income,"households_base.assign(income_quartile=lambda x: pd.qcut(x['income'], 4, labels=False) + 1, tract_id_base=lambda x: x['block_id'].astype(str).str[:12].astype('int64')).groupby(['tract_id_base', 'income_quartile']).size().reset_index(name=f'households_{base_year}')",count base year households per base year tract and income quartile
+base_households_by_income,"base_households_by_income.merge(tract_income_index, on=['tract_id_base', 'income_quartile'], how='right').fillna(0)",keep every tract x quartile combination and fill missing base year counts with zero
+household_targets,"hist_households_by_income.merge(base_households_by_income, on=['tract_id_base', 'income_quartile'], how='outer')",history and base year household counts per base year tract and income quartile
+household_targets,"household_targets.rename(columns={'tract_id_base': 'tract_id'}).fillna(0)"
+household_targets,"household_targets.loc[household_targets[f'households_{base_year}'] > household_targets[f'households_{history_year}']].copy()",filter to rows with positive growth
+housing_unit_targets,"housing_unit_targets.loc[housing_unit_targets[f'units_{base_year}'] > housing_unit_targets[f'units_{history_year}']].copy()",filter to rows with positive growth
+household_targets.tract_id,"household_targets['tract_id'].astype('int64')"
+housing_unit_targets.tract_id,"housing_unit_targets['tract_id'].astype('int64')"
