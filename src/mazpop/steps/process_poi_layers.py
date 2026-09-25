@@ -2,6 +2,7 @@ import geopandas as gpd
 import pandas as pd
 from pathlib import Path
 
+from mazpop.util.layers import ensure_layers_exist
 from mazpop.util.pipeline import Pipeline
 
 
@@ -9,6 +10,13 @@ def run_step(context):
     pipeline = Pipeline(context)
     today = pd.Timestamp.today().strftime("%Y-%m-%d")
     poi_layers = pipeline.settings.get('point_of_interest_layers', [])
+
+    # Make sure every configured POI layer is available locally (unzipping
+    # archives in the data directory when needed) before reading them.
+    ensure_layers_exist(
+        pipeline.data_dir, poi_layers, layer_kind='point of interest layer'
+    )
+
     for poi_layer in poi_layers:
         layer_path = Path(pipeline.data_dir) / poi_layer['filename']
         gdf = gpd.read_file(layer_path)

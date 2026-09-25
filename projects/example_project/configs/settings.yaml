@@ -18,6 +18,8 @@ census_key: CENSUS_KEY # census api key env variable name
 #----------------------------------------------------------------------------------------
 #   list of spatial layers saved in the data dir to be spatially joined to blocks so that 
 #   each block is associated with the corresponding spatial layer geometry
+#   layers can be stored in zipped files in the data directory: if a configured file is
+#   missing, every .zip in the data dir is unzipped and the check is repeated
 #
 #   filename: the name of the spatial layer file (required)
 #   input_id_field: the name of the ID field in the input spatial layer (required)
@@ -63,21 +65,19 @@ government_sector: 98 # assigns this sector for all government jobs matching ind
 # Pipeline steps
 #----------------------------------------------------------------------------------------
 steps:
-  - name: mazpop.steps.unzip_data
-
 # create marginals and run popsim for history year (for land use model calibration)
   - name: pypyr.steps.set # sets which year key to use (history or base) for the steps after this one
     in:
       set:
         year_key: history # history or base
-  # - mazpop.steps.set_year
-  # - mazpop.steps.get_acs_data
-  # - mazpop.steps.get_dec_data
-  # - mazpop.steps.pums_download
-  # - mazpop.steps.create_seed_data
-  # - mazpop.steps.create_geography_lookups
-  # - mazpop.steps.create_marginals
-  # - mazpop.steps.run_populationsim
+  - mazpop.steps.set_year
+  - mazpop.steps.get_acs_data
+  - mazpop.steps.get_dec_data
+  - mazpop.steps.pums_download
+  - mazpop.steps.create_seed_data
+  - mazpop.steps.create_geography_lookups
+  - mazpop.steps.create_marginals
+  - mazpop.steps.run_populationsim
 
   # create marginals and run popsim for base year
   - name: pypyr.steps.set # sets which year key to use (history or base) for the steps after this one
@@ -85,17 +85,17 @@ steps:
       set:
         year_key: base # history or base
   - mazpop.steps.set_year
-  # - mazpop.steps.get_acs_data
-  # - mazpop.steps.get_dec_data
-  # - mazpop.steps.calculate_hhpop_age
-  # - mazpop.steps.pums_download
-  # - mazpop.steps.create_seed_data
-  # - mazpop.steps.create_geography_lookups
-  # - mazpop.steps.create_marginals
-  # - mazpop.steps.run_populationsim
-  # - mazpop.steps.post_popsim_processing
-  # - mazpop.steps.build_osm_network
-  # - mazpop.steps.export_calibration_data
-  # - mazpop.steps.download_jobs_data
-  # - mazpop.steps.process_poi_layers
+  - mazpop.steps.get_acs_data
+  - mazpop.steps.get_dec_data
+  - mazpop.steps.calculate_hhpop_age
+  - mazpop.steps.pums_download
+  - mazpop.steps.create_seed_data
+  - mazpop.steps.create_geography_lookups
+  - mazpop.steps.create_marginals
+  - mazpop.steps.run_populationsim
+  - mazpop.steps.post_popsim_processing
+  - mazpop.steps.build_osm_network
+  - mazpop.steps.export_calibration_data
+  - mazpop.steps.download_jobs_data
+  - mazpop.steps.process_poi_layers
 

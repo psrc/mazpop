@@ -20,6 +20,7 @@ import pandas as pd
 import requests
 import us
 
+from mazpop.util.layers import ensure_layers_exist
 from mazpop.util.pipeline import Pipeline
 
 
@@ -284,6 +285,14 @@ def run_step(context):
     pipeline = Pipeline(context)
     year = pipeline.context['year']
     pums_year = pipeline.context['acs_year']
+
+    # Make sure every configured spatial layer is available locally (unzipping
+    # archives in the data directory when needed) before joining them to blocks.
+    ensure_layers_exist(
+        pipeline.data_dir,
+        pipeline.settings.get('spatial_layers', []),
+        layer_kind='spatial layer',
+    )
 
     # Download each TIGER/Line file once and keep the GeoDataFrames in memory
     # while every table below is built from them.
