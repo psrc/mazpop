@@ -50,11 +50,9 @@ steps:
 - mazpop.steps.get_dec_data
 - mazpop.steps.pums_download
 - mazpop.steps.create_seed_data
-- mazpop.steps.create_puma_tract_lookup
-- mazpop.steps.create_puma_block_lookup
-- mazpop.steps.create_block_lookups
+- mazpop.steps.create_geography_lookups
 - mazpop.steps.create_marginals
-# - mazpop.steps.run_populationsim
+- mazpop.steps.run_populationsim
 
 # create marginals and run popsim for base year
 - name: pypyr.steps.set # sets which year key to use (history or base) for the steps after this one
@@ -67,9 +65,8 @@ steps:
 - mazpop.steps.calculate_hhpop_age
 - mazpop.steps.pums_download
 - mazpop.steps.create_seed_data
-- mazpop.steps.create_puma_tract_lookup
-- mazpop.steps.create_puma_block_lookup
-- mazpop.steps.create_block_lookups
+- mazpop.steps.create_geography_lookups
 - mazpop.steps.create_marginals
-# - mazpop.steps.run_populationsim
+- mazpop.steps.run_populationsim
+- mazpop.steps.post_popsim_processing
 

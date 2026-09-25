@@ -1,0 +1,20 @@
+expr_out,expression,notes
+units['maz_id'],"units['block_id'].map(maz_ids).astype('Int64')",maz id of the unit's block (NA for blocks outside the clipped area)
+units, units.loc[~units['maz_id'].isna()].copy(), drop blocks outside of clipped area
+rents_values,"units.groupby('block_id')[['rent','home_value']].mean().round(2).reset_index()",mean rent and home value per block (NaN for not-applicable units is ignored); must run before units is reduced to the housing unit columns
+blocks,"blocks.merge(rents_values, on='block_id', how='left')",
+sf_mask,units['building_type'] == 2,single-family detached (PUMS BLD 2)
+middle_mask,"units['building_type'].isin([1,3,4,5,10])",mobile home / attached single-family / 2-4 unit buildings / boat-RV-van (PUMS BLD 1 3 4 5 10)
+mf_mask,"units['building_type'].isin([6,7,8,9])",five or more unit buildings (PUMS BLD 6-9)
+"units.loc[sf_mask,'unit_type_id']",1,
+"units.loc[middle_mask,'unit_type_id']",2,
+"units.loc[mf_mask,'unit_type_id']",3,
+units['unit_type_id'],"units['unit_type_id'].astype('Int64')",cast the masks to a nullable int so the exports stay integer
+units['unit_id'],"range(1, len(units) + 1)",
+households,units.loc[units['is_vacant'] == 0].copy(),occupied units only; must run after unit_id and unit_type_id are set
+households,"households.drop(columns=['block_id','puma_id','tract_id','is_vacant','vacant_type','rent','home_value'],errors='ignore')",
+units,"units[['unit_id','maz_id','year_built','unit_type_id']].copy()",
+persons,persons.loc[persons['household_id'].isin(households['household_id'])].copy(),drop person records outside of clipped area
+persons,"persons.drop(columns=['block_id','tract_id','puma_id'],errors='ignore')",
+unit_types,"{1: 'Single-family detached',2: 'Middle-density (townhomes and 2-4 unit buildings)',3: 'Multi-family (5+ units)'}",
+unit_types_df,"pd.DataFrame(list(unit_types.items()), columns=['unit_type_id', 'description'])"
