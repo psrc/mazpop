@@ -37,36 +37,45 @@ spatial_layers:
 
 
 #----------------------------------------------------------------------------------------
+# Open Street Map Network Settings (pandana network)
+#----------------------------------------------------------------------------------------
+
+# whether to include ferry routes in the OSM network to connect islands, ferry-only connected 
+# islands will not be connected otherwise and dropped from the network
+include_ferries: False 
+
+#----------------------------------------------------------------------------------------
 # Pipeline steps
 #----------------------------------------------------------------------------------------
 steps:
 # create marginals and run popsim for history year (for land use model calibration)
-- name: pypyr.steps.set # sets which year key to use (history or base) for the steps after this one
-  in:
-    set:
-      year_key: history # history or base
-- mazpop.steps.set_year
-- mazpop.steps.get_acs_data
-- mazpop.steps.get_dec_data
-- mazpop.steps.pums_download
-- mazpop.steps.create_seed_data
-- mazpop.steps.create_geography_lookups
-- mazpop.steps.create_marginals
-- mazpop.steps.run_populationsim
+  - name: pypyr.steps.set # sets which year key to use (history or base) for the steps after this one
+    in:
+      set:
+        year_key: history # history or base
+  # - mazpop.steps.set_year
+  # - mazpop.steps.get_acs_data
+  # - mazpop.steps.get_dec_data
+  # - mazpop.steps.pums_download
+  # - mazpop.steps.create_seed_data
+  # - mazpop.steps.create_geography_lookups
+  # - mazpop.steps.create_marginals
+  # - mazpop.steps.run_populationsim
 
-# create marginals and run popsim for base year
-- name: pypyr.steps.set # sets which year key to use (history or base) for the steps after this one
-  in:
-    set:
-      year_key: base # history or base
-- mazpop.steps.set_year
-- mazpop.steps.get_acs_data
-- mazpop.steps.get_dec_data
-- mazpop.steps.calculate_hhpop_age
-- mazpop.steps.pums_download
-- mazpop.steps.create_seed_data
-- mazpop.steps.create_geography_lookups
-- mazpop.steps.create_marginals
-- mazpop.steps.run_populationsim
-- mazpop.steps.post_popsim_processing
+  # create marginals and run popsim for base year
+  - name: pypyr.steps.set # sets which year key to use (history or base) for the steps after this one
+    in:
+      set:
+        year_key: base # history or base
+  - mazpop.steps.set_year
+  # - mazpop.steps.get_acs_data
+  # - mazpop.steps.get_dec_data
+  # - mazpop.steps.calculate_hhpop_age
+  # - mazpop.steps.pums_download
+  # - mazpop.steps.create_seed_data
+  # - mazpop.steps.create_geography_lookups
+  # - mazpop.steps.create_marginals
+  # - mazpop.steps.run_populationsim
+  # - mazpop.steps.post_popsim_processing
+  - mazpop.steps.build_osm_network
 

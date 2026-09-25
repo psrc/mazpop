@@ -117,7 +117,7 @@ def run_step(context):
     # export tables to project_dir/output
     households.to_csv(project_output_dir / f'synthetic_households_{today}.csv', index=False)
     units.to_csv(project_output_dir / f'synthetic_housing_units_{today}.csv', index=False)
-    blocks.to_csv(project_output_dir / f'blocks{year}_{today}.csv', index=False)
+    blocks.to_csv(project_output_dir / f'blocks_{year}_{today}.csv', index=False)
     persons.to_csv(project_output_dir / f'synthetic_persons_{today}.csv', index=False)
     unit_types_df.to_csv(project_output_dir / 'housing_unit_types.csv', index=False)
     print(

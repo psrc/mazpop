@@ -683,6 +683,7 @@ source = { editable = "." }
 dependencies = [
     { name = "geopandas" },
     { name = "iteround" },
+    { name = "osmnx" },
     { name = "populationsim" },
     { name = "pypyr" },
     { name = "requests" },
@@ -693,6 +694,7 @@ dependencies = [
 requires-dist = [
     { name = "geopandas", specifier = ">=1.1.4" },
     { name = "iteround", specifier = ">=1.0.4" },
+    { name = "osmnx", specifier = ">=2.1.1" },
     { name = "populationsim", specifier = ">=0.10.0" },
     { name = "pypyr", specifier = ">=5.9.1" },
     { name = "requests", specifier = ">=2.34.2" },
@@ -828,6 +830,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/ec/37/084a332ecdf8b0049151bd78001a7baf2daf7f500d043beb8a1f95d0f4e3/ndindex-1.10.1-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:78ce45106ebf67aeba99714818c721d8fd5fb9534daebd2565665a2d64b50fc9", size = 1635372, upload-time = "2025-11-19T20:39:47.231Z" },
     { url = "https://files.pythonhosted.org/packages/28/f4/716580fbb03018ab1daa86ed12c1925c67e79689db5fee82393e840758a2/ndindex-1.10.1-cp314-cp314t-win32.whl", hash = "sha256:fe5341e24dc992b09c258456ac90a09a6d25efdc2cb86dcc91d32c8891e1df9a", size = 162186, upload-time = "2025-11-19T20:39:48.81Z" },
     { url = "https://files.pythonhosted.org/packages/4d/20/28f669c09a470e7f523b0cc10b94336664d9648594015e3f2a1ec29047b1/ndindex-1.10.1-cp314-cp314t-win_amd64.whl", hash = "sha256:37f87f0e7690ae0324334740e0661d6297f2e62c9bf925127d249fb7eddd0ad8", size = 171077, upload-time = "2025-11-19T20:39:50.108Z" },
+]
+
+[[package]]
+name = "networkx"
+version = "3.7"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/dc/76/3af777226b63a5e64a6b36b1ec5855c14e2b94a37096d4760e595fc43511/networkx-3.7.tar.gz", hash = "sha256:fd77a511bd90f39f3d016351345b52cf5319b813bdca01de3f755d3cca62e96a", size = 1866482, upload-time = "2026-09-21T16:45:16.974Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7e/cd/fe58041e9011f307c490e3e17dd48cc516448f7c698a3f2d9d9d65d7e6a8/networkx-3.7-py3-none-any.whl", hash = "sha256:e3fd2c13a7814cee3746340d8d7f8598a67f16a58bf47fb7f8793fab6efca1b0", size = 2142205, upload-time = "2026-09-21T16:45:14.609Z" },
 ]
 
 [[package]]
@@ -970,6 +981,24 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/98/83/2954b6aa032b77f49a478e0d9682ae8176abfb4bd33d935f0260ecb1741b/ortools-9.14.6206-cp313-cp313t-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:d40d8141667d47405f296a9f687058c566d7816586e9a672b59e9fcec8493133", size = 27687594, upload-time = "2025-06-19T15:47:36.241Z" },
     { url = "https://files.pythonhosted.org/packages/b9/9a/9e9866952841e9f4aadccb110c0012d6a76f01b8798432fac0971d60aac1/ortools-9.14.6206-cp313-cp313t-musllinux_1_2_aarch64.whl", hash = "sha256:aefea81ed81aa937873efc520381785ed65380e52917f492ab566f46bbb5660d", size = 27698487, upload-time = "2025-06-19T15:54:01.03Z" },
     { url = "https://files.pythonhosted.org/packages/91/a5/97a86cdd52c961273981e9ab905a301b7f086593b597d8974c411decf61a/ortools-9.14.6206-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:f044bb277db3ab6a1b958728fe1cf14ca87c3800d67d7b321d876b48269340f6", size = 29519050, upload-time = "2025-06-19T15:54:04.147Z" },
+]
+
+[[package]]
+name = "osmnx"
+version = "2.1.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "geopandas" },
+    { name = "networkx" },
+    { name = "numpy" },
+    { name = "pandas", version = "2.3.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.14'" },
+    { name = "pandas", version = "3.0.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.14'" },
+    { name = "requests" },
+    { name = "shapely" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0c/6d/42279fb31b09f0532ec4de90604ee8078adad66b89865887cdf014f651f1/osmnx-2.1.1.tar.gz", hash = "sha256:0785166487d4d8da5a551dac3d1562fe114fb39f3bf66f261c8b4d60baee9295", size = 90368, upload-time = "2026-07-21T19:24:06.779Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ed/08/450c5c707493cf3a1da91050cf6b9b92e5279676f28e85d85b81d9e46f85/osmnx-2.1.1-py3-none-any.whl", hash = "sha256:6680c98312a8c327dea01da8ec59328bf1d7b0e0cab42db6ce500d0cb83b87e5", size = 104711, upload-time = "2026-07-21T19:24:05.274Z" },
 ]
 
 [[package]]
