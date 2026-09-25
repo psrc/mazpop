@@ -1,0 +1,21 @@
+cns,naics,industry,name
+CNS01,11,11,"Forestry, fishing, and hunting"
+CNS02,21,21,Mining
+CNS03,22,22,Utilities
+CNS04,23,23,Construction
+CNS05,"31,32,33",3133,Manufacturing
+CNS06,42,42,Wholesale trade
+CNS07,"44,45",4445,Retail trade
+CNS08,"48,49",4849,Transportation and warehousing
+CNS09,51,51,Information
+CNS10,52,52,Finance and insurance
+CNS11,53,53,Real estate and rental and leasing
+CNS12,54,54,"Professional, scientific, and technical services"
+CNS13,55,55,Management of companies and enterprises
+CNS14,56,56,"Administrative, support, waste management, and remediation services"
+CNS15,61,61,Educational services; private
+CNS16,62,62,Health care and social assistance
+CNS17,71,71,"Arts, entertainment, and recreation"
+CNS18,72,72,Accommodation and food services
+CNS19,81,81,Other services (except public administration)
+CNS20,98,98,Government

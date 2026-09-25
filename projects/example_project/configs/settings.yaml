@@ -44,6 +44,14 @@ spatial_layers:
 # islands will not be connected otherwise and dropped from the network
 include_ferries: False 
 
+
+#----------------------------------------------------------------------------------------
+# LEHD LODES jobs settings
+#----------------------------------------------------------------------------------------
+government_sector: 98
+lodes_version: 8
+
+
 #----------------------------------------------------------------------------------------
 # Pipeline steps
 #----------------------------------------------------------------------------------------
@@ -78,5 +86,6 @@ steps:
   # - mazpop.steps.run_populationsim
   # - mazpop.steps.post_popsim_processing
   # - mazpop.steps.build_osm_network
-  - mazpop.steps.export_calibration_data
+  # - mazpop.steps.export_calibration_data
+  - mazpop.steps.download_jobs_data
 
