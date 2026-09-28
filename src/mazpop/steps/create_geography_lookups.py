@@ -277,7 +277,7 @@ def build_blocks_table(pipeline, blocks):
             geog=layer_geog,
             geog_id=geog_id,
             additional_columns=layer.get('additional_columns', []),
-            sjoin_nearest=pipeline.layer.get('sjoin_nearest', False),
+            sjoin_nearest=layer.get('sjoin_nearest', False),
         )
         joined_out = joined_out.merge(joined, on='block_id', how='outer')
     clipped_blocks = drop_blocks_not_in_clip_layers(pipeline, joined_out)
