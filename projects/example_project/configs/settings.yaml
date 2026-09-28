@@ -26,6 +26,8 @@ census_key: CENSUS_KEY # census api key env variable name
 #   rename_id_field: the name to rename the input_id_field to (optional)
 #   additional_columns: list of additional columns to keep from the spatial layer (optional)
 #   clip_blocks_to_layer: whether to clip blocks to the layer geometry (optional)
+#   sjoin_nearest: whether to use a nearest spatial join for unmatched blocks (optional)
+
 
 spatial_layers:
   - filename: TAZ2010_subset.shp

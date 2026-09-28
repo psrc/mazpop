@@ -199,9 +199,14 @@ def load_spatial_layer(pipeline, layer):
     return geog[[rename_id_field, 'geometry'] + additional_columns]
 
 
-def spatial_join_blocks_to_geog(block_pts, geog, geog_id, additional_columns=[]):
+def spatial_join_blocks_to_geog(block_pts, geog, geog_id, additional_columns=[], sjoin_nearest=False):
     geog = geog.to_crs(epsg=4326)
     joined = gpd.sjoin(block_pts, geog, how='left')
+    if sjoin_nearest:
+        matched = joined.loc[joined['index_right'].notna()].copy()
+        unmatched = joined.loc[joined['index_right'].isna()].copy()
+        joined_nearest = gpd.sjoin_nearest(unmatched, geog, how='left')
+        joined = pd.concat([matched, joined_nearest], ignore_index=True)
     return joined[['block_id', geog_id] + additional_columns]
 
 
@@ -272,6 +277,7 @@ def build_blocks_table(pipeline, blocks):
             geog=layer_geog,
             geog_id=geog_id,
             additional_columns=layer.get('additional_columns', []),
+            sjoin_nearest=pipeline.layer.get('sjoin_nearest', False),
         )
         joined_out = joined_out.merge(joined, on='block_id', how='outer')
     clipped_blocks = drop_blocks_not_in_clip_layers(pipeline, joined_out)
