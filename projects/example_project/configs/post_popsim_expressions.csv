@@ -3,6 +3,25 @@ units['maz_id'],"units['block_id'].map(maz_ids).astype('Int64')",maz id of the u
 units, units.loc[~units['maz_id'].isna()].copy(), drop blocks outside of clipped area
 rents_values,"units.groupby('block_id')[['rent','home_value']].mean().round(2).reset_index()",mean rent and home value per block (NaN for not-applicable units is ignored); must run before units is reduced to the housing unit columns
 blocks,"blocks.merge(rents_values, on='block_id', how='left')",
+blocks['county_id'],blocks['block_id'].astype(str).str[:6].astype('int64'),county id from the first 6 digits of block_id (block_id is '1' + the 15-digit geoid)
+blocks['tract_id'],blocks['block_id'].astype(str).str[:12].astype('int64'),tract id from the first 12 digits of block_id
+county_values,blocks.groupby('county_id')['home_value'].mean(),mean home value per county for blocks without a value
+county_rents,blocks.groupby('county_id')['rent'].mean(),mean rent per county for blocks without a rent
+tract_values,blocks.groupby('tract_id')['home_value'].mean(),mean home value per tract for blocks without a value
+tract_rents,blocks.groupby('tract_id')['rent'].mean(),mean rent per tract for blocks without a rent
+blk_values,blocks.groupby('block_id')['home_value'].mean(),mean home value per block
+blk_rents,blocks.groupby('block_id')['rent'].mean(),mean rent per block
+blocks['res_rent'],blocks['block_id'].map(blk_rents),block rent; NaN when no unit in the block reported rent
+blocks['res_value'],blocks['block_id'].map(blk_values),block home value; NaN when no unit in the block reported a value
+blocks['rent_impute'],blocks['res_rent'].isna().astype(int),1 when the block rent is missing and gets imputed from the tract/county mean
+blocks['value_impute'],blocks['res_value'].isna().astype(int),1 when the block value is missing and gets imputed from the tract/county mean
+"blocks.loc[blocks['res_rent'].isna(),'res_rent']","blocks.loc[blocks['res_rent'].isna(),'tract_id'].map(tract_rents)",impute missing block rents with the tract mean
+"blocks.loc[blocks['res_value'].isna(),'res_value']","blocks.loc[blocks['res_value'].isna(),'tract_id'].map(tract_values)",impute missing block values with the tract mean
+"blocks.loc[blocks['res_rent'].isna(),'res_rent']","blocks.loc[blocks['res_rent'].isna(),'county_id'].map(county_rents)",fall back to the county mean rent where the tract mean is also missing
+"blocks.loc[blocks['res_value'].isna(),'res_value']","blocks.loc[blocks['res_value'].isna(),'county_id'].map(county_values)",fall back to the county mean value where the tract mean is also missing
+blocks['res_rent'],blocks['res_rent'].round(0).astype(int),round the imputed rent to whole dollars
+blocks['res_value'],blocks['res_value'].round(0).astype(int),round the imputed value to whole dollars
+blocks,"blocks.drop(columns=['county_id', 'tract_id', 'rent', 'home_value'])",drop the helper geography ids used to pick the imputation level and drop orig rents and values cols
 sf_mask,units['building_type'] == 2,single-family detached (PUMS BLD 2)
 middle_mask,"units['building_type'].isin([1,3,4,5,10])",mobile home / attached single-family / 2-4 unit buildings / boat-RV-van (PUMS BLD 1 3 4 5 10)
 mf_mask,"units['building_type'].isin([6,7,8,9])",five or more unit buildings (PUMS BLD 6-9)
