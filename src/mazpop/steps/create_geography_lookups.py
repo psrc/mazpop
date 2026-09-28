@@ -200,14 +200,21 @@ def load_spatial_layer(pipeline, layer):
 
 
 def spatial_join_blocks_to_geog(block_pts, geog, geog_id, additional_columns=[], sjoin_nearest=False):
-    geog = geog.to_crs(epsg=4326)
+    geog = geog.to_crs(epsg=5070)
+    block_pts = block_pts.to_crs(epsg=5070)
     joined = gpd.sjoin(block_pts, geog, how='left')
     if sjoin_nearest:
         matched = joined.loc[joined['index_right'].notna()].copy()
-        unmatched = joined.loc[joined['index_right'].isna()].copy()
+        unmatched = joined.loc[joined['index_right'].isna(), block_pts.columns].copy()
+        print(f"Performing nearest spatial join for {len(unmatched)} unmatched blocks to {geog_id}")
         joined_nearest = gpd.sjoin_nearest(unmatched, geog, how='left')
         joined = pd.concat([matched, joined_nearest], ignore_index=True)
-    return joined[['block_id', geog_id] + additional_columns]
+    result = joined.to_crs(epsg=4326)[['block_id', geog_id] + additional_columns]
+    if sjoin_nearest:
+        n_unmatched = int(result[geog_id].isna().sum())
+        if n_unmatched:
+            print(f"Warning: {n_unmatched} blocks did not match any {geog_id} even with sjoin_nearest")
+    return result
 
 
 def get_geog_id(layer):
