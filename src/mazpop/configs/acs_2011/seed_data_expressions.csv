@@ -8,6 +8,29 @@ households.persons,households['NP'],
 households.building_type,households['BLD'].astype(int),
 households.tenure,"np.where(households.TEN.isin([1,2]),1,np.where(households.TEN.isin([3,4]),2,0))",vacant units get 0 since TEN is blank for them
 households.income,"np.where(households.NP > 0,round(households['ADJINC'] / 1000000 * households['HINCP'],0).fillna(0),-1).astype(int)",-1 for vacant units
+households.rent,"np.where(households.TEN == 3,round(households['ADJHSG'] / 1000000 * households['GRNTP'],2),-1)",-1 for vacant units
+households.home_value,"np.where((households.TEN.isin([1,2])) | (households.VACS.isin([3,4])),households['VAL'].map({1:10000,2:15000,3:20000,4:25000,5:30000,6:35000,7:40000,8:50000,9:60000,10:70000,11:80000,12:90000,13:100000,14:125000,15:150000,16:175000,17:200000,18:250000,19:300000,20:400000,21:500000,22:750000,23:1000000,24:2000000}),-1)"
+persons.age,persons['AGEP'],
+persons.is_hispanic,(persons['HISP'] > 1).astype(int),
+persons.race,persons['RAC1P'],
+persons.is_adult,(persons['age'] >= 18).astype(int),
+persons.is_worker,"persons['ESR'].isin([1, 2, 4, 5]).astype(int)",
+persons.is_student,"persons['SCH'].isin([2,3]).astype(int)",
+persons.work_from_home,(persons['JWTR'] == 11).astype(int),
+persons.is_child,(persons['age'] < 18).astype(int),
+households.children,persons.groupby('household_id')['is_child'].sum().reindex(households['household_id']).fillna(0).values.astype(int),
+persons.is_worker,"persons['ESR'].isin([1, 2, 4, 5]).astype(int)",
+households.workers,persons.groupby('household_id')['is_worker'].sum().reindex(households['household_id']).fillna(0).values.astype(int),
+households.cars,households['VEH'].fillna(-1).astype(int),blank for vacant units
+households.age_of_head,households['SERIALNO'].map(persons.loc[persons['SPORDER']==1].set_index('SERIALNO')['AGEP']).fillna(-1).astype(int),blank for vacant units
+households.race_of_head,households['SERIALNO'].map(persons.loc[persons['SPORDER']==1].set_index('SERIALNO')['RAC1P']).fillna(-1).astype(int),blank for vacant units
+households.hispanic_status_of_head,households['SERIALNO'].map(persons.loc[persons['SPORDER']==1].set_index('SERIALNO')['HISP']).fillna(-1).astype(int),blank for vacant units
+households.hispanic_status_of_head,"np.where(households.NP > 0,(households['hispanic_status_of_head']>1).astype(int),-1)",-1 for vacant units
+persons.industry,"persons.naicsp07.str[:3].replace('928','0').str[:2].replace({'11':'1121','21':'1121','31':'3133','32':'3133','33':'3133','3M':'3133','44':'4445','45':'4445','4M':'4445','48':'484922','49':'484922','22':'484922','52':'5253','53':'5253','54':'5456','55':'5456','56':'5456','61':'6162','62':'6162','71':'7172','72':'7172','99':'0','N.':'0'}).astype(float).fillna(0)",
+persons.industry,"np.where((persons['COW'].isin([3,4,5]) & persons['industry']!=0),98,persons['industry'])",set gov workers to industy 98
+persons.industry,"np.where(persons.is_worker==0,0,persons['industry']).astype(int)",
+persons.occupation,"persons['socp10'].str[:2].replace({'55':'99','N.':'0'}).astype(float).fillna(99)",
+persons.occupation,"np.where(persons.is_worker==0,0,persons['occupation']).astype(int)",
 households.puma_id,('1' + households['ST'].astype(str).str.zfill(2) + households['PUMA'].astype(str).str.zfill(5)).astype(int),
 persons.pwgtp,persons['PWGTP'],
 households.wgtp,households['WGTP'],
@@ -19,3 +42,4 @@ persons.per_num,persons['SPORDER'],
 households.is_vacant,(households['VACS'] > 0).astype(int),
 households.vacant_type,households['VACS'].fillna(0).astype(int),blank for occupied units
 households.year_built,"households['YBL'].map({9:1939,8:1940,7:1950,6:1960,5:1970,4:1980,3:1990,2:2000,1:2000}).fillna(-1).astype(int)",
+households.recent_mover,"np.where(households.NP > 0,households['MV'].isin([1,2,3]).astype(int),-1)",-1 for vacant units

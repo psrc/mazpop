@@ -50,6 +50,14 @@ output_synthetic_population:
     - building_type
     - tenure
     - income
+    - rent
+    - home_value
+    - children
+    - workers
+    - cars
+    - age_of_head
+    - race_of_head
+    - hispanic_status_of_head
     - puma_id
     - wgtp
     - serialno
@@ -57,9 +65,20 @@ output_synthetic_population:
     - is_vacant
     - vacant_type
     - year_built
+    - recent_mover
   persons:
     filename: synthetic_persons.csv
     columns:
+    - age
+    - is_hispanic
+    - race
+    - is_adult
+    - is_worker
+    - is_student
+    - work_from_home
+    - is_child
+    - industry
+    - occupation
     - pwgtp
     - serialno
     - hh_id
