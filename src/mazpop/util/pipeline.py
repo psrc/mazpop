@@ -7,6 +7,8 @@ import warnings
 import pandas as pd
 import yaml
 
+from mazpop.util.env import dotenv_path, load_dotenv
+
 
 class Pipeline:
     def __init__(self, context):
@@ -148,6 +150,10 @@ class Pipeline:
         key = self.settings.get('census_key')
         if key is None:
             raise ValueError("'census_key' not found in settings.yaml")
+        # Load the project's git-ignored .env so a key saved through the editor
+        # GUI is available to the pipeline without exporting an OS-level
+        # environment variable. Existing environment variables take precedence.
+        load_dotenv(dotenv_path(self.root_dir))
         return os.getenv(key, key)
 
     def create_directory(self, path_parts: list=None, path: str=None) -> Path:

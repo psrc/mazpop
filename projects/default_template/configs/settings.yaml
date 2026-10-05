@@ -1,0 +1,98 @@
+#----------------------------------------------------------------------------------------
+# Global Settings (required)
+#----------------------------------------------------------------------------------------
+base_year: 2020 # used for population, households and housing unit totals
+base_acs_year: 2024 # used for synthetic population characteristics, totals will always match base year
+
+history_year: 2010 # used for calibration data
+history_acs_year: 2011
+
+# relative to project root
+data_dir: data
+output_dir: output
+
+census_key: CENSUS_KEY # census api key env variable name
+
+#----------------------------------------------------------------------------------------
+# Spatial layers
+#----------------------------------------------------------------------------------------
+#   list of spatial layers saved in the data dir to be spatially joined to blocks so that
+#   each block is associated with the corresponding spatial layer geometry.
+#   layers can be stored in zipped files in the data directory: if a configured file is
+#   missing, every .zip in the data dir is unzipped and the check is repeated
+#
+#   filename: the name of the spatial layer file (required)
+#   input_id_field: the name of the ID field in the input spatial layer (required)
+#   rename_id_field: the name to rename the input_id_field to (optional)
+#   additional_columns: list of additional columns to keep from the spatial layer (optional)
+#   clip_blocks_to_layer: whether to clip blocks to the layer geometry (optional)
+#   sjoin_nearest: whether to use a nearest spatial join for unmatched blocks (optional)
+
+spatial_layers: []
+  # - filename: TAZ2010_subset.shp
+  #   input_id_field: taz
+  #   rename_id_field: zone_id
+  #   clip_blocks_to_layer: true
+  #
+  # - filename: cities26.shp
+  #   input_id_field: juris
+  #   additional_columns: ['rgeo_class']
+
+#----------------------------------------------------------------------------------------
+# Open Street Map Network Settings (pandana network)
+#----------------------------------------------------------------------------------------
+# whether to include ferry routes in the OSM network to connect islands, ferry-only connected
+# islands will not be connected otherwise and dropped from the network
+include_ferries: False
+
+# turns point files into CSVs with x,y coordinates in WGS84 (EPSG:4326) to be used with
+# the pandana network for accessibility analysis. Polygon layers should have the 'polygon'
+# key set to true so they can first be converted to points using centroids.
+point_of_interest_layers: [] # can be stored in zipped files in the data directory
+  # - filename: transit_stops.shp
+  # - filename: urban_centers.shp
+  #   polygon: true
+
+#----------------------------------------------------------------------------------------
+# LEHD LODES jobs settings
+#----------------------------------------------------------------------------------------
+lodes_version: 8 # which version of the LEHD LODES data to use
+government_sector: 98 # assigns this sector for all government jobs matching industry_crosswalk.csv
+
+#----------------------------------------------------------------------------------------
+# Pipeline steps
+#----------------------------------------------------------------------------------------
+steps:
+# create marginals and run popsim for history year (for land use model calibration)
+  - name: pypyr.steps.set # sets which year key to use (history or base) for the steps after this one
+    in:
+      set:
+        year_key: history # history or base
+  - mazpop.steps.set_year
+  - mazpop.steps.get_acs_data
+  - mazpop.steps.get_dec_data
+  - mazpop.steps.pums_download
+  - mazpop.steps.create_seed_data
+  - mazpop.steps.create_geography_lookups
+  - mazpop.steps.create_marginals
+  - mazpop.steps.run_populationsim
+
+  # create marginals and run popsim for base year
+  - name: pypyr.steps.set # sets which year key to use (history or base) for the steps after this one
+    in:
+      set:
+        year_key: base # history or base
+  - mazpop.steps.set_year
+  - mazpop.steps.get_acs_data
+  - mazpop.steps.get_dec_data
+  - mazpop.steps.calculate_hhpop_age
+  - mazpop.steps.pums_download
+  - mazpop.steps.create_seed_data
+  - mazpop.steps.create_geography_lookups
+  - mazpop.steps.create_marginals
+  - mazpop.steps.run_populationsim
+  - mazpop.steps.post_popsim_processing
+  - mazpop.steps.build_osm_network
+  - mazpop.steps.export_calibration_data
+  - mazpop.steps.download_jobs_data
+  - mazpop.steps.process_poi_layers
