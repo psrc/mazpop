@@ -7,6 +7,7 @@ from mazpop.util.pipeline import Pipeline
 
 
 def get_lodes_jobs(pipeline,block_ids):
+    year = pipeline.context['year']
     industry_xwalk = pipeline.settings_path / 'industry_crosswalk.csv'
     industry_xwalk = pd.read_csv(industry_xwalk)
 
@@ -16,7 +17,7 @@ def get_lodes_jobs(pipeline,block_ids):
     jobs_out = pd.DataFrame()
     for state_str, _ in pipeline.state_county_fips.items():
         state_abbr = us.states.lookup(state_str).abbr.lower()
-        all_jobs_url = f'https://lehd.ces.census.gov/data/lodes/LODES{lodes_version}/{state_abbr}/wac/{state_abbr}_wac_S000_JT00_{pipeline.base_year}.csv.gz'
+        all_jobs_url = f'https://lehd.ces.census.gov/data/lodes/LODES{lodes_version}/{state_abbr}/wac/{state_abbr}_wac_S000_JT00_{year}.csv.gz'
         print(f"Downloading all jobs data from {all_jobs_url}")
         all_jobs = (
         pd.read_csv(all_jobs_url)
@@ -25,7 +26,7 @@ def get_lodes_jobs(pipeline,block_ids):
                 )
             .query('block_id in @block_ids')
             )
-        priv_jobs_url = f'https://lehd.ces.census.gov/data/lodes/LODES{lodes_version}/{state_abbr}/wac/{state_abbr}_wac_S000_JT02_{pipeline.base_year}.csv.gz'
+        priv_jobs_url = f'https://lehd.ces.census.gov/data/lodes/LODES{lodes_version}/{state_abbr}/wac/{state_abbr}_wac_S000_JT02_{year}.csv.gz'
         print(f"Downloading private jobs data from {priv_jobs_url}")
         priv_jobs = (
                 pd.read_csv(priv_jobs_url)
@@ -74,7 +75,8 @@ def get_lodes_jobs(pipeline,block_ids):
 
 def run_step(context):
     pipeline = Pipeline(context)
-    blocks = pipeline.get_table(f'blocks_{pipeline.base_year}')
+    year = pipeline.context['year']
+    blocks = pipeline.get_table(f'blocks_{year}')
     block_ids = blocks['block_id'].tolist()
 
     # download and process LODES jobs data
@@ -83,6 +85,6 @@ def run_step(context):
 
     # save the processed jobs data to the output directory
     today = pd.Timestamp.today().strftime('%Y-%m-%d')
-    out_path = Path(pipeline.output_dir) / f'jobs_{today}.csv'
+    out_path = Path(pipeline.output_dir) / f'jobs_{year}_{today}.csv'
     print(f"Saving processed jobs table to {out_path}")
     jobs.drop(columns=['block_id']).to_csv(out_path, index=False)
