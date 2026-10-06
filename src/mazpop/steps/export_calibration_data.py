@@ -1,6 +1,6 @@
 """Evaluate the project's calibration target expressions and export the targets.
 
-Builds the history year block to base year tract crosswalk, loads the synthetic
+Builds the base year block to history year tract crosswalk, loads the synthetic
 housing unit and household tables from both PopulationSim runs, then evaluates
 the expressions in the project's ``configs/calibration_data_expressions.csv``
 in file order via :func:`mazpop.util.expressions.evaluate_expression_csv`.
@@ -34,38 +34,38 @@ EXPORTED_VARIABLES = ['housing_unit_targets', 'household_targets']
 def create_block_tract_lookup(blocks_by_state, tracts_by_state):
     all_blocks = []
     for state_str, blocks in blocks_by_state.items():
-        blocks = blocks.rename(columns={'block_id':'block_id_hist'}).copy()
+        blocks = blocks.rename(columns={'block_id':'block_id_base'}).copy()
         blocks.geometry = blocks.representative_point()
-        all_blocks.append(blocks[['block_id_hist','geometry']])
+        all_blocks.append(blocks[['block_id_base','geometry']])
     blocks_gdf = pd.concat(all_blocks, ignore_index=True)
     blocks_gdf = blocks_gdf.to_crs(epsg=4326)
     
     all_tracts = []
     for state_str, tracts in tracts_by_state.items():
-        tracts = tracts.rename(columns={'tract_id':'tract_id_base'}).copy()
-        all_tracts.append(tracts[['tract_id_base','geometry']])
+        tracts = tracts.rename(columns={'tract_id':'tract_id_hist'}).copy()
+        all_tracts.append(tracts[['tract_id_hist','geometry']])
     tracts_gdf = pd.concat(all_tracts, ignore_index=True)
     tracts_gdf = tracts_gdf.to_crs(epsg=4326)
 
     blocks_joined = blocks_gdf.sjoin(tracts_gdf, how='left')
-    return blocks_joined[['block_id_hist','tract_id_base']]
+    return blocks_joined[['block_id_base','tract_id_hist']]
         
 
 def run_step(context):
     pipeline = Pipeline(context)
     today = pd.Timestamp.today().strftime('%Y-%m-%d')
 
-    # spatial join history year blocks (2010) to base year tracts (2020)
+    # spatial join base year blocks (2020) to history year tracts (2010)
     base_year = pipeline.base_year
     history_year = pipeline.history_year
-    tract_tiger_year = get_tract_tiger_year(base_year)
+    tract_tiger_year = get_tract_tiger_year(history_year)
     tracts_by_state = {
         state_str: download_tracts(tract_tiger_year, state_str, county_ids)
         for state_str, county_ids in pipeline.state_county_fips.items()
     }
 
     blocks_by_state = {
-        state_str: download_blocks(history_year, state_str, county_ids)
+        state_str: download_blocks(base_year, state_str, county_ids)
         for state_str, county_ids in pipeline.state_county_fips.items()
     }
 

@@ -52,6 +52,7 @@ output_synthetic_population:
     - income
     - rent
     - home_value
+    - adults
     - children
     - workers
     - cars
@@ -72,6 +73,7 @@ output_synthetic_population:
     - age
     - is_hispanic
     - race
+    - sex
     - is_adult
     - is_worker
     - is_student

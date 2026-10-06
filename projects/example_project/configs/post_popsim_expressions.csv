@@ -31,7 +31,7 @@ mf_mask,"units['building_type'].isin([6,7,8,9])",five or more unit buildings (PU
 units['unit_type_id'],"units['unit_type_id'].astype('Int64')",cast the masks to a nullable int so the exports stay integer
 units['unit_id'],"range(1, len(units) + 1)",
 households,units.loc[units['is_vacant'] == 0].copy(),occupied units only; must run after unit_id and unit_type_id are set
-households,"households.drop(columns=['block_id','puma_id','tract_id','is_vacant','vacant_type','rent','home_value'],errors='ignore')",
+households,"households.drop(columns=['block_id','puma_id','tract_id','is_vacant','vacant_type','rent','home_value','unit_id','unit_type_id'],errors='ignore')",
 units,"units[['unit_id','maz_id','year_built','unit_type_id']].copy()",
 persons,persons.loc[persons['household_id'].isin(households['household_id'])].copy(),drop person records outside of clipped area
 persons,"persons.drop(columns=['block_id','tract_id','puma_id'],errors='ignore')",
