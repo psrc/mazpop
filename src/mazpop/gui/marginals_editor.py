@@ -76,6 +76,9 @@ def get_bins(year_key: str, group: str) -> list[dict]:
     Bins carry a stable id so widget keys survive insertions and deletions
     (index-based keys would show the wrong bin's contents after a delete).
     """
+    # A group newly picked in the multiselect (e.g. in a project with no YAML
+    # yet) has no state until first used.
+    init_group_state(year_key, group)
     return st.session_state[_bins_key(year_key, group)]
 
 

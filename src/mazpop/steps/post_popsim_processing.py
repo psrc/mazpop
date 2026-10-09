@@ -27,7 +27,7 @@ UNITS_FILE = 'popsim_hh.csv'
 PERSONS_FILE = 'synthetic_persons.csv'
 
 # variables that must exist after evaluating the expressions before export
-EXPORTED_VARIABLES = ['households', 'units', 'blocks', 'persons', 'unit_types_df']
+EXPORTED_VARIABLES = ['households', 'units', 'blocks', 'persons', 'unit_types_df', 'aggr_race_df']
 
 
 def run_step(context):
@@ -67,6 +67,7 @@ def run_step(context):
     blocks = namespace['blocks']
     persons = namespace['persons']
     unit_types_df = namespace['unit_types_df']
+    aggr_race_df = namespace['aggr_race_df']
 
     dropped_units = loaded_units - len(units)
     dropped_persons = loaded_persons - len(persons)
@@ -83,6 +84,7 @@ def run_step(context):
     blocks.to_csv(project_output_dir / f'blocks_{year}_{today}.csv', index=False)
     persons.to_csv(project_output_dir / f'synthetic_persons_{year}_{today}.csv', index=False)
     unit_types_df.to_csv(project_output_dir / 'housing_unit_types.csv', index=False)
+    aggr_race_df.to_csv(project_output_dir / 'aggr_race_of_head.csv', index=False)
     print(
         f"Post-popsim tables written to {project_output_dir}: "
         f"{len(households):,} households, {len(units):,} housing units, "
